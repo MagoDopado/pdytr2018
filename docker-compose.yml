@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  compiler:
+    image: gmaron/pdytr:latest
+    hostname: pdytr
+    networks:
+      - dockerBridge
+    ports:
+      - 5901:5901
+      - 6901:6901
+    volumes:
+      - .:/pdytr
+
+networks:
+  dockerBridge:
+    driver: bridge
