@@ -9,9 +9,12 @@ El contenido del repositorio serán las prácticas y resoluciones de las prácti
 #### SetUp Enviroment
 
 Se agregó un `docker-compose` para facilitar el montado de disco y forwardeo de puertos.  
+```console
+sudo apt install docker-compose
+```
 
 Los comandos de la práctica deben ser reemplazados:  
-```bash
+```zsh
 docker run -itd -v {rutaACarpetaPractica}:/pdytr \
 -p 5901:5901 -p 6901:6901 \
 --name pdytr gmaron/pdytr:latest
