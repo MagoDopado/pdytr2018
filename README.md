@@ -9,14 +9,6 @@ El contenido del repositorio serán las prácticas y resoluciones de las prácti
 #### SetUp Enviroment
 
 Se agregó un `docker-compose` para facilitar el montado de disco y forwardeo de puertos.  
-```console
-sudo apt install docker-compose
-
-sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-
-docker-compose --version
-```
-(https://docs.docker.com/compose/install/#install-compose)
 
 Los comandos de la práctica deben ser reemplazados:  
 ```zsh
@@ -36,3 +28,15 @@ por:
 ```bash
 docker-compose exec -u root compiler bash
 ```  
+
+
+#### > How to install docker-compose
+
+```console
+sudo apt install docker-compose
+
+sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+
+docker-compose --version
+```
+Fuente https://docs.docker.com/compose/install/#install-compose
