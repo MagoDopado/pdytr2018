@@ -2,7 +2,7 @@
 
 Similitudes
 
-* Poseen caracteristicas y funciones suficientes para cumplir el esquema de Cliente / Servidor.
+* Poseen caracteristicas y funciones suficientes para cumplir el modelo de Cliente / Servidor.
 * La lectura funciona de la misma manera. Apenas llega algún dato al servidor, se libera (el buffer/stream) para continuar con la ejecución.
 
 Diferencias
@@ -15,7 +15,7 @@ Diferencias
 
 Inciso a)
 En los ejemplos de la práctica podemos ver como se usan los sockets para una comunicación. El client que manda un mensaje y una vez mandado, termina la comunicación y el server que espera a recibir un mensaje, lo imprime y termina también.
-Una arquitectura de Cliente/Servidor tiene ciertas caracteristicas a cumplir:
+Un modelo Cliente/Servidor tiene ciertas caracteristicas a cumplir:
 
 Pasos de conexión:
   * Inicialización
