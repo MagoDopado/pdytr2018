@@ -1,10 +1,12 @@
-# Programacin Distribuida y Tiempo Real 2018
+# Programación Distribuida y Tiempo Real 2018
 
 #### Universidad Nacional de La Plata - Facultad de Informática
 
 Materia de 4to año.
 
 El contenido del repositorio serán las prácticas y resoluciones de las prácticas.
+
+#### SetUp Enviroment
 
 Se agregó un `docker-compose` para facilitar el montado de disco y forwardeo de puertos.  
 
