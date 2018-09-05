@@ -55,10 +55,27 @@ int main(int argc, char *argv[])
     if (newsockfd < 0) error("ERROR on accept");
 
     // Receive.
-    char buffer[256];
-    bzero(buffer, 256);
-    int readBytes = read(newsockfd, buffer, 255);
-    if (readBytes < 0) error("ERROR reading from socket");
+    int size = 0;
+    int readBytes = read(newsockfd, &size, sizeof(int));
+    if (readBytes < 0) {
+      printf("ERROR reading from socket");
+      continue;
+    }
+    if (size < 0) {
+      printf("Bad buffer size");
+      continue;
+    }
+
+    char* buffer = malloc(size);
+    bzero(buffer, size);
+    int totalBytes = 0;
+    int currentBytes = 0;
+    do {
+      int missingBytes = size - totalBytes;
+      printf("atempting to read %d\n", missingBytes -1);
+      currentBytes = read(newsockfd, buffer, missingBytes);
+      totalBytes += currentBytes;
+    } while(currentBytes && totalBytes < size);
 
     // Send.
     int writtenBytes = write(newsockfd, "I got your message", 18);

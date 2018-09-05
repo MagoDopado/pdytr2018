@@ -54,11 +54,14 @@ int main(int argc, char *argv[])
   fgets(buffer,255,stdin);
 
   // Send.
-  int n = write(sockfd,buffer,strlen(buffer));
+  int bytesToSend = strlen(buffer);
+  int n = write(sockfd, &bytesToSend, sizeof(int));
+  if (n < 0) error("ERROR writing to socket");
+  n = write(sockfd, buffer, bytesToSend);
   if (n < 0) error("ERROR writing to socket");
 
   // Receive.
-  bzero(buffer,256);
+  bzero(buffer, 256);
   n = read(sockfd, buffer, 255);
   if (n < 0) error("ERROR reading from socket");
 
