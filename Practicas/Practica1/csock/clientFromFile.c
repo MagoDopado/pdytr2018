@@ -44,28 +44,25 @@ int main(int argc, char *argv[])
   // Get socket and connect.
   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) error("ERROR opening socket");
-  if (connect(sockfd,
-    (const struct sockaddr *)&serv_addr,
-    sizeof(serv_addr)) < 0) {
-      error("ERROR connecting");
-  }
+  if (connect(sockfd, (const struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    error("ERROR connecting");
 
-  // Data adquisition
+  // Data adquisition.
   printf("Please enter the message: ");
   char buffer[256];
   bzero(buffer,256);
   fgets(buffer,255,stdin);
 
-  // Send
+  // Send.
   int n = write(sockfd,buffer,strlen(buffer));
   if (n < 0) error("ERROR writing to socket");
 
-  // Receive
+  // Receive.
   bzero(buffer,256);
-  n = read(sockfd,buffer,255);
+  n = read(sockfd, buffer, 255);
   if (n < 0) error("ERROR reading from socket");
 
-  //Output
+  //Output.
   printf("%s\n",buffer);
   return 0;
 }
