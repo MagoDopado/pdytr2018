@@ -39,12 +39,23 @@ Características del Client
 Inciso b)
 
 
-#### 3 - ¿Por qué en C se puede usar la misma variable tanto para leer de teclado como para enviar por un sockets? ¿Esto sería relevante para las aplicaciones c/s?
+
+Inciso c)
 
 
 
-#### 4 - ¿Podría implementar un servidor de archivos remotos utilizando sockets? Describa brevemente la interfaz y los detalles que considere más importantes del diseño. 
+Inciso d)
 
+
+
+#### 3 - ¿Por qué en C se puede usar la misma variable tanto para leer de teclado como para enviar por un socket? ¿Esto sería relevante para las aplicaciones c/s?
+Es un puntero a char. Es un buffer. No tiene más lógica que de estructura contenedora.
+Consideramos que no es relevante.
+
+
+#### 4 - ¿Podría implementar un servidor de archivos remotos utilizando sockets? Describa brevemente la interfaz y los detalles que considere más importantes del diseño.
+Si se podría implementar.
+Habría que configurar el cliente para que envíe el nombre del archivo al servidor y el servidor busca el archivo, lo abre y lo manda por red.
 
 
 #### 5 - Defina qué es un servidor con estado (stateful server) y qué es un servidor sin estado (stateless server)
