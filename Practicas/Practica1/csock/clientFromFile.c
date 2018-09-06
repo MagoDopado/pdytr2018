@@ -31,14 +31,25 @@ char* readFromFile() {
   printf("Please enter the filename: ");
   char* filename = calloc(256, sizeof(char));
   fgets(filename, 255, stdin);
+  filename[strlen(filename)-1]='\0';
   //openfile and get size
   FILE* fileD = fopen(filename, "r");
+  if (fileD == 0) {
+    perror("fopen()");
+    exit(-1);
+  }
   fseek(fileD, 0L, SEEK_END);
+
   int size = ftell(fileD);
   fseek(fileD, 0L, SEEK_SET);
   char* buffer = calloc(size, sizeof(char));
+
   //read to buffer.
+  fread(buffer, sizeof(char), size, fileD);
+
   free(filename);
+  fclose(fileD);
+
   return buffer;
 }
 

@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
       printf("ERROR reading from socket\n");
       continue;
     }
-    if (size < 0) {
+    if (size <= 0) {
       printf("Bad buffer size\n");
       continue;
     }
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
     if (writtenBytes < 0) error("ERROR writing to socket");
 
     //Output.
-    printf("Here is the message: %s\n", buffer);
+    // printf("Here is the message: %s\n", buffer);
     fflush(stdout);
     free(buffer);
     close(newsockfd);
