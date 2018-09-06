@@ -15,6 +15,9 @@
 #define false 0
 #endif
 
+/* Time in seconds from some point in the past */
+double dwalltime();
+
 void error(char *msg)
 {
     perror(msg);
@@ -32,7 +35,7 @@ int main(int argc, char *argv[])
 {
   validateArgs(argc, argv);
   int portno = atoi(argv[1]);
-
+  double timetick;
   // Generate biding socket.
   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) error("ERROR opening socket");
@@ -76,6 +79,8 @@ int main(int argc, char *argv[])
     // assure to exhaust buffer
     int currentBytes = 0;
     readBytes = 0;
+
+    timetick = dwalltime();
     do {
       int missingBytes = size - currentBytes;
       printf("atempting to read %d\n", missingBytes -1);
@@ -87,7 +92,8 @@ int main(int argc, char *argv[])
       printf("ERROR reading from socket\n");
       continue;
     }
-
+    printf("Tiempo en segundos %f \n", dwalltime() - timetick);
+    
     // Send.
     int writtenBytes = write(newsockfd, "I got your message", 18);
     if (writtenBytes < 0) error("ERROR writing to socket");
@@ -99,4 +105,18 @@ int main(int argc, char *argv[])
     close(newsockfd);
   } while(true);
   return 0;
+}
+
+/*****************************************************************/
+
+#include <sys/time.h>
+
+double dwalltime()
+{
+	double sec;
+	struct timeval tv;
+
+	gettimeofday(&tv,NULL);
+	sec = tv.tv_sec + tv.tv_usec/1000000.0;
+	return sec;
 }
