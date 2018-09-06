@@ -35,11 +35,10 @@ char* readFromFile() {
   //openfile and get size
   FILE* fileD = fopen(filename, "r");
   if (fileD == 0) {
-    perror("fopen()");
-    exit(-1);
+    error("fopen()");
   }
-  fseek(fileD, 0L, SEEK_END);
 
+  fseek(fileD, 0L, SEEK_END);
   int size = ftell(fileD);
   fseek(fileD, 0L, SEEK_SET);
   char* buffer = calloc(size, sizeof(char));
@@ -96,17 +95,20 @@ int main(int argc, char *argv[])
     writtenBytes = write(sockfd, buffer + currentBytes, remainingBytes);
     currentBytes += writtenBytes;
   } while(writtenBytes > 0 && currentBytes < bytesToSend);
+  free(buffer);
   if (writtenBytes < 0)
   {
     error("ERROR writing to socket");
   }
 
   // Receive.
-  bzero(buffer, 256);
-  n = read(sockfd, buffer, 255);
+  char* responseBuffer = calloc(256, sizeof(char));
+  n = read(sockfd, responseBuffer, 255);
   if (n < 0) error("ERROR reading from socket");
 
   //Output.
-  printf("%s\n",buffer);
+  printf("%s\n", responseBuffer);
+  free(responseBuffer);
+
   return 0;
 }
