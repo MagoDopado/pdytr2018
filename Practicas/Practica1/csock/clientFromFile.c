@@ -7,6 +7,9 @@
 #include <string.h>
 #include <unistd.h>
 
+/* Time in seconds from some point in the past */
+double dwalltime();
+
 void error(char *msg)
 {
   perror(msg);
@@ -56,7 +59,7 @@ char* readFromFile() {
 int main(int argc, char *argv[])
 {
   validateArgs(argc, argv);
-
+  double timetick;
   // Get target address && port.
   struct hostent *server = gethostbyname(argv[1]);
   if (server == NULL) {
@@ -85,7 +88,9 @@ int main(int argc, char *argv[])
 
   // Send.
   int bytesToSend = strlen(buffer);
+  timetick = dwalltime();
   int n = write(sockfd, &bytesToSend, sizeof(int));
+  printf("Tiempo en segundos %f \n", dwalltime() - timetick);
   if (n < 0) error("ERROR writing to socket");
 
   int currentBytes = 0;
@@ -109,4 +114,18 @@ int main(int argc, char *argv[])
   //Output.
   printf("%s\n",buffer);
   return 0;
+}
+
+/*****************************************************************/
+
+#include <sys/time.h>
+
+double dwalltime()
+{
+	double sec;
+	struct timeval tv;
+
+	gettimeofday(&tv,NULL);
+	sec = tv.tv_sec + tv.tv_usec/1000000.0;
+	return sec;
 }
