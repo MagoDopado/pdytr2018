@@ -20,6 +20,28 @@ void validateArgs(int argc, char* argv[]) {
   }
 }
 
+char* readFromInput() {
+  printf("Please enter the message: ");
+  char* buffer = calloc(256, sizeof(char));
+  fgets(buffer, 255, stdin);
+  return buffer;
+}
+
+char* readFromFile() {
+  printf("Please enter the filename: ");
+  char* filename = calloc(256, sizeof(char));
+  fgets(filename, 255, stdin);
+  //openfile and get size
+  FILE* fileD = fopen(filename, "r");
+  fseek(fileD, 0L, SEEK_END);
+  int size = ftell(fileD);
+  fseek(fileD, 0L, SEEK_SET);
+  char* buffer = calloc(size, sizeof(char));
+  //read to buffer.
+  free(filename);
+  return buffer;
+}
+
 int main(int argc, char *argv[])
 {
   validateArgs(argc, argv);
@@ -48,17 +70,25 @@ int main(int argc, char *argv[])
     error("ERROR connecting");
 
   // Data adquisition.
-  printf("Please enter the message: ");
-  char buffer[256];
-  bzero(buffer,256);
-  fgets(buffer,255,stdin);
+  char* buffer = readFromFile();
 
   // Send.
   int bytesToSend = strlen(buffer);
   int n = write(sockfd, &bytesToSend, sizeof(int));
   if (n < 0) error("ERROR writing to socket");
-  n = write(sockfd, buffer, bytesToSend);
-  if (n < 0) error("ERROR writing to socket");
+
+  int currentBytes = 0;
+  int writtenBytes = 0;
+  do {
+    int remainingBytes = bytesToSend - currentBytes;
+    printf("Attempting to send %d\n", remainingBytes -1);
+    writtenBytes = write(sockfd, buffer + currentBytes, remainingBytes);
+    currentBytes += writtenBytes;
+  } while(writtenBytes > 0 && currentBytes < bytesToSend);
+  if (writtenBytes < 0)
+  {
+    error("ERROR writing to socket");
+  }
 
   // Receive.
   bzero(buffer, 256);

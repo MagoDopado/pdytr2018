@@ -52,30 +52,41 @@ int main(int argc, char *argv[])
     struct sockaddr cli_addr;
     int cliLen = sizeof(cli_addr);
     int newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &cliLen);
-    if (newsockfd < 0) error("ERROR on accept");
+    if (newsockfd < 0) {
+      printf("ERROR on accept");
+      continue;
+    }
 
-    // Receive.
+    // Receive data size.
     int size = 0;
     int readBytes = read(newsockfd, &size, sizeof(int));
     if (readBytes < 0) {
-      printf("ERROR reading from socket");
+      printf("ERROR reading from socket\n");
       continue;
     }
     if (size < 0) {
-      printf("Bad buffer size");
+      printf("Bad buffer size\n");
       continue;
     }
 
-    char* buffer = malloc(size);
-    bzero(buffer, size);
-    int totalBytes = 0;
+    // allocate data buffer.
+    // Assuere null terminated buffer.
+    char* buffer = calloc(size + 1, sizeof(char));
+
+    // assure to exhaust buffer
     int currentBytes = 0;
+    readBytes = 0;
     do {
-      int missingBytes = size - totalBytes;
+      int missingBytes = size - currentBytes;
       printf("atempting to read %d\n", missingBytes -1);
-      currentBytes = read(newsockfd, buffer, missingBytes);
-      totalBytes += currentBytes;
-    } while(currentBytes && totalBytes < size);
+      readBytes = read(newsockfd, buffer + currentBytes, missingBytes);
+      currentBytes += readBytes;
+    } while(readBytes > 0 && currentBytes < size);
+    if (readBytes < 0) {
+      free(buffer);
+      printf("ERROR reading from socket\n");
+      continue;
+    }
 
     // Send.
     int writtenBytes = write(newsockfd, "I got your message", 18);
@@ -83,6 +94,9 @@ int main(int argc, char *argv[])
 
     //Output.
     printf("Here is the message: %s\n", buffer);
+    fflush(stdout);
+    free(buffer);
+    close(newsockfd);
   } while(true);
   return 0;
 }
