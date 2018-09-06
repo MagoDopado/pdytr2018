@@ -35,7 +35,6 @@ int main(int argc, char *argv[])
 {
   validateArgs(argc, argv);
   int portno = atoi(argv[1]);
-  double timetick;
   // Generate biding socket.
   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) error("ERROR opening socket");
@@ -80,7 +79,7 @@ int main(int argc, char *argv[])
     int currentBytes = 0;
     readBytes = 0;
 
-    timetick = dwalltime();
+    double startTime = dwalltime();
     do {
       int missingBytes = size - currentBytes;
       printf("atempting to read %d\n", missingBytes -1);
@@ -92,8 +91,10 @@ int main(int argc, char *argv[])
       printf("ERROR reading from socket\n");
       continue;
     }
-    printf("Tiempo en segundos %f \n", dwalltime() - timetick);
-    
+    double endTime = dwalltime();
+    double delta = endTime - startTime;
+    printf("Receive time %f ms.\n", delta);
+
     // Send.
     int writtenBytes = write(newsockfd, "I got your message", 18);
     if (writtenBytes < 0) error("ERROR writing to socket");
