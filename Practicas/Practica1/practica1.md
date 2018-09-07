@@ -1,3 +1,16 @@
+<h1><center>PDyTR 2018</center></h1>
+<h1><center>Informe 1</center></h1>
+
+</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
+#### Integrantes:
+
+##### Aparicio Natalia, Legajo 12667/7  
+
+##### Eusebi Cirano, Legajo 12469/2  
+</br></br></br></br></br></br>
+
+
+
 #### 1 - Identifique similitudes y diferencias entre los sockets en C y en Java.
 
 Similitudes
