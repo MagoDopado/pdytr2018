@@ -82,6 +82,14 @@ Para la verificación de contenido, con la misma función definida en ambos proc
 **Inciso D)**  
 Usamos como tamaño de file 3, 4 y 6 MegaBytes de prueba. No utilizamos arhivos más pequeños porque es despreciable la diferencia entre sets de datos pequeñas.
 
+tamaño | repeticiones | promedio | desviacion estandar
+---|---|---|---
+1M|500|5.0877 ms|0.1033 ms
+5M|500|24.6126 ms|0.4398 ms
+6M|500|29.4078 ms|0.4163 ms
+10M|500|48.5726 ms|0.4725 ms
+50M|100|243.5377 ms|1.7989 ms
+100M|50|484.7031ms|0.8658 ms
 
 #### 3 - ¿Por qué en C se puede usar la misma variable tanto para leer de teclado como para enviar por un socket? ¿Esto sería relevante para las aplicaciones c/s?
 Ya que utilizamos para esta práctiva punteros a char para el buffer, no tiene más lógica que de estructura contenedora.
