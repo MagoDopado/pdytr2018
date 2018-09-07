@@ -60,6 +60,7 @@ int main(int argc, char *argv[])
     }
 
     // Receive data size.
+    double startTime = dwalltime();
     int size = 0;
     int readBytes = read(newsockfd, &size, sizeof(int));
     if (readBytes < 0) {
@@ -79,7 +80,6 @@ int main(int argc, char *argv[])
     int currentBytes = 0;
     readBytes = 0;
 
-    double startTime = dwalltime();
     do {
       int missingBytes = size - currentBytes;
       printf("atempting to read %d\n", missingBytes -1);

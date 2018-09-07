@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <math.h>
 
 /* Time in seconds from some point in the past */
 double dwalltime();
@@ -30,7 +31,7 @@ char* readFromInput() {
   return buffer;
 }
 
-char* readFromFile(char* filename) {
+char* readFromFile(char* filename, int* size) {
   /*printf("Please enter the filename: ");
   char* filename = calloc(256, sizeof(char));
   fgets(filename, 255, stdin);
@@ -42,12 +43,12 @@ char* readFromFile(char* filename) {
   }
 
   fseek(fileD, 0L, SEEK_END);
-  int size = ftell(fileD);
+  *size = ftell(fileD);
   fseek(fileD, 0L, SEEK_SET);
-  char* buffer = calloc(size, sizeof(char));
+  char* buffer = calloc(*size, sizeof(char));
 
   //read to buffer.
-  fread(buffer, sizeof(char), size, fileD);
+  fread(buffer, sizeof(char), *size, fileD);
 
   //free(filename);
   fclose(fileD);
@@ -76,8 +77,10 @@ int main(int argc, char *argv[])
   serv_addr.sin_port = htons(portno);
 
   // Data adquisition.
-  char* buffer = readFromFile(argv[3]);
+  int bytesToSend = 0;
+  char* buffer = readFromFile(argv[3], &bytesToSend);
   int repetitions = atoi(argv[4]);
+  double* times = calloc(repetitions, sizeof(double));
   double totalTime = 0;
 
   for (int i = 0; i < repetitions; i++) {
@@ -87,9 +90,8 @@ int main(int argc, char *argv[])
     if (connect(sockfd, (const struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
       error("ERROR connecting");
 
-    // Send.
     double startTime = dwalltime();
-    int bytesToSend = strlen(buffer);
+    // Send.
     int n = write(sockfd, &bytesToSend, sizeof(int));
     if (n < 0) error("ERROR writing to socket");
 
@@ -101,10 +103,6 @@ int main(int argc, char *argv[])
       writtenBytes = write(sockfd, buffer + currentBytes, remainingBytes);
       currentBytes += writtenBytes;
     } while(writtenBytes > 0 && currentBytes < bytesToSend);
-    double endTime = dwalltime();
-    double delta = endTime - startTime;
-    totalTime += delta;
-    printf("Send time %f ms\n", delta * 1000);
     if (writtenBytes < 0)
     {
       error("ERROR writing to socket");
@@ -115,6 +113,12 @@ int main(int argc, char *argv[])
     n = read(sockfd, responseBuffer, 255);
     if (n < 0) error("ERROR reading from socket");
 
+    double endTime = dwalltime();
+    double delta = (endTime - startTime) / 2;
+    times[i] = delta;
+    totalTime += delta;
+    printf("Send time %f ms\n", delta * 1000);
+
     //Output.
     //printf("%s\n", responseBuffer);
     free(responseBuffer);
@@ -122,6 +126,13 @@ int main(int argc, char *argv[])
   free(buffer);
   double avgTime = totalTime / repetitions;
   printf("Avg Send time %f ms\n", avgTime * 1000);
+  double stdDev = 0;
+  for (int i = 0; i < repetitions; i++) {
+    stdDev += pow(times[i] - avgTime, 2);
+  }
+  stdDev = stdDev / (repetitions -1);
+  stdDev = sqrt(stdDev);
+  printf("Standard deviation %f ms\n", stdDev * 1000);
 
   return 0;
 }
