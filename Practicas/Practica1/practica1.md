@@ -1,12 +1,15 @@
 <h1><center>PDyTR 2018</center></h1>
 <h1><center>Informe 1</center></h1>
 
-</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
-#### Integrantes:
+</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
+### Integrantes:
 
-##### Aparicio Natalia, Legajo 12667/7  
+#### Aparicio Natalia, Legajo 12667/7  
 
-##### Eusebi Cirano, Legajo 12469/2  
+#### Eusebi Cirano, Legajo 12469/2  
+
+#### [Repo](https://github.com/MagoDopado/pdytr2018)
+
 </br></br></br></br></br></br>
 
 
