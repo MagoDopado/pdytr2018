@@ -44,11 +44,18 @@ Ambos tenemos conocimiento en C por haber realizado la materia Seminario de C y 
 El approach que pensamos es con buffers de tamaño variable, utilizando punteros a char. Por esto, no nos encontramos con el problema de la limitación de un arreglo fijo/estático []. Según en el estándar C 99, la cantidad mínima en bytes con los que nos empezariamos a encontrar con problemas es de: 65,535 bytes.
 
 **Inciso b)**  
+Leyendo la documentación de read y write en C pudimos encontrar la razón por la que lee de a partes del socket.
+Ambas operaciones devuelven la cantidad leída/enviada, pudiendo ser  menor al count especificado. Esto no significa que hubo algún error sino que para un mejor manejo de memoria y de la aplicacion (performance) lee hasta una cantidad máxima (variable) de datos.  
 
+Si la conexión fuese lenta, problemas de conectividad o algunos de los dos procesos fuera más lento, al intentar leer/escribir toda la cantidad deseada, podría bloquearse el proceso intentando realizar la operación o hasta "nunca" terminar. Entonces entendemos que al hacer la lectura/escritura de a batches, devuelve el control del proceso para decidir como continuar, teniendo como dato la cantidad de datos leídos/escritos.
+
+Doc:  
+  http://man7.org/linux/man-pages/man2/read.2.html  
+  http://man7.org/linux/man-pages/man2/write.2.html
 
 **Inciso c)**  
-Para la verificación de cantidad lo hacemos enviandole dos mensajes al servidor, el primero indicando la cantidad a mandar y en el segundo mensaje, la información.
-Para la verificación de contenido, con la misma función en ambos procesos, utilizamos un checksum
+Para la verificación de cantidad lo hacemos enviandole dos mensajes al servidor, el primero indicando la cantidad y en el segundo mensaje, la información.
+Para la verificación de contenido, con la misma función definida en ambos procesos, utilizamos un checksum.
 
 **Inciso D)**  
 Usamos como tamaño de file 3, 4 y 6 MegaBytes de prueba. No utilizamos arhivos más pequeños porque es despreciable la diferencia entre sets de datos pequeñas.
