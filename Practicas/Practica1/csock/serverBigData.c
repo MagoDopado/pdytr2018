@@ -17,6 +17,7 @@
 
 /* Time in seconds from some point in the past */
 double dwalltime();
+uint32_t adler32(unsigned char *data, size_t len);
 
 void error(char *msg)
 {
@@ -67,19 +68,18 @@ int main(int argc, char *argv[])
       printf("ERROR reading from socket\n");
       continue;
     }
+
+    // allocate data buffer.
     if (size <= 0) {
       printf("Bad buffer size\n");
       continue;
     }
-
-    // allocate data buffer.
     // Assuere null terminated buffer.
     char* buffer = calloc(size + 1, sizeof(char));
 
-    // assure to exhaust buffer
+    // Read Data.
     int currentBytes = 0;
     readBytes = 0;
-
     do {
       int missingBytes = size - currentBytes;
       printf("atempting to read %d\n", missingBytes -1);
@@ -91,13 +91,28 @@ int main(int argc, char *argv[])
       printf("ERROR reading from socket\n");
       continue;
     }
+
+    uint32_t integrity = 0;
+    readBytes = read(newsockfd, &integrity, sizeof(uint32_t));
+    if (readBytes < 0) {
+      printf("ERROR reading from socket\n");
+      continue;
+    }
+
     double endTime = dwalltime();
     double delta = endTime - startTime;
     printf("Receive time %f ms.\n", delta);
 
-    // Send.
-    int writtenBytes = write(newsockfd, "I got your message", 18);
-    if (writtenBytes < 0) error("ERROR writing to socket");
+    if (integrity == adler32(buffer, size)) {
+      // Send correct checksum.
+      int writtenBytes = write(newsockfd, &integrity, sizeof(uint32_t));
+      if (writtenBytes < 0) error("ERROR writing to socket");
+    }
+    else {
+      char* errorMessage = "Bad checksum.";
+      int writtenBytes = write(newsockfd, errorMessage, strlen(errorMessage));
+      if (writtenBytes < 0) error("ERROR writing to socket");
+    }
 
     //Output.
     // printf("Here is the message: %s\n", buffer);
@@ -120,4 +135,20 @@ double dwalltime()
 	gettimeofday(&tv,NULL);
 	sec = tv.tv_sec + tv.tv_usec/1000000.0;
 	return sec;
+}
+
+const uint32_t MOD_ADLER = 65521;
+uint32_t adler32(unsigned char *data, size_t len)
+{
+    uint32_t a = 1, b = 0;
+    size_t index;
+
+    // Process each byte of the data in order
+    for (index = 0; index < len; ++index)
+    {
+        a = (a + data[index]) % MOD_ADLER;
+        b = (b + a) % MOD_ADLER;
+    }
+
+    return (b << 16) | a;
 }

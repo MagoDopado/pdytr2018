@@ -10,6 +10,8 @@
 
 /* Time in seconds from some point in the past */
 double dwalltime();
+uint32_t adler32(unsigned char *data, size_t len);
+
 
 void error(char *msg)
 {
@@ -32,10 +34,6 @@ char* readFromInput() {
 }
 
 char* readFromFile(char* filename, int* size) {
-  /*printf("Please enter the filename: ");
-  char* filename = calloc(256, sizeof(char));
-  fgets(filename, 255, stdin);
-  filename[strlen(filename)-1]='\0';*/
   //openfile and get size
   FILE* fileD = fopen(filename, "r");
   if (fileD == 0) {
@@ -79,6 +77,9 @@ int main(int argc, char *argv[])
   // Data adquisition.
   int bytesToSend = 0;
   char* buffer = readFromFile(argv[3], &bytesToSend);
+  uint32_t adler = adler32(buffer, bytesToSend);
+
+  // Timing.
   int repetitions = atoi(argv[4]);
   double* times = calloc(repetitions, sizeof(double));
   double totalTime = 0;
@@ -92,9 +93,11 @@ int main(int argc, char *argv[])
 
     double startTime = dwalltime();
     // Send.
+    //Size.
     int n = write(sockfd, &bytesToSend, sizeof(int));
     if (n < 0) error("ERROR writing to socket");
 
+    // Data.
     int currentBytes = 0;
     int writtenBytes = 0;
     do {
@@ -107,6 +110,9 @@ int main(int argc, char *argv[])
     {
       error("ERROR writing to socket");
     }
+    // Integrity check.
+    n = write(sockfd, &adler, sizeof(uint32_t));
+    if (n < 0) error("Error sending integrity check");
 
     // Receive.
     char* responseBuffer = calloc(256, sizeof(char));
@@ -120,7 +126,11 @@ int main(int argc, char *argv[])
     printf("Send time %f ms\n", delta * 1000);
 
     //Output.
-    //printf("%s\n", responseBuffer);
+    for (const char* hex = responseBuffer; *hex; ++hex)
+    {
+        printf("%02x", *hex);
+    }
+    printf("\n");
     free(responseBuffer);
   }
   free(buffer);
@@ -149,4 +159,20 @@ double dwalltime()
 	gettimeofday(&tv,NULL);
 	sec = tv.tv_sec + tv.tv_usec/1000000.0;
 	return sec;
+}
+
+const uint32_t MOD_ADLER = 65521;
+uint32_t adler32(unsigned char *data, size_t len)
+{
+    uint32_t a = 1, b = 0;
+    size_t index;
+
+    // Process each byte of the data in order
+    for (index = 0; index < len; ++index)
+    {
+        a = (a + data[index]) % MOD_ADLER;
+        b = (b + a) % MOD_ADLER;
+    }
+
+    return (b << 16) | a;
 }
