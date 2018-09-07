@@ -44,6 +44,15 @@ Ambos tenemos conocimiento en C por haber realizado la materia Seminario de C y 
 El approach que pensamos es con buffers de tamaño variable, utilizando punteros a char. Por esto, no nos encontramos con el problema de la limitación de un arreglo fijo/estático []. Según en el estándar C 99, la cantidad mínima en bytes con los que nos empezariamos a encontrar con problemas es de: 65,535 bytes.
 
 **Inciso b)**  
+
+Para compilar los archivos en la carpeta csock:
+gcc clientFromFile.c -o bin/client -lm
+gcc serverBigData.c -o bin/server
+
+Para correr cada archivo:
+./bin/client compiler 9000
+./bin/server 9000
+
 Leyendo la documentación de read y write en C pudimos encontrar la razón por la que lee de a partes del socket.
 Ambas operaciones devuelven la cantidad leída/enviada, pudiendo ser  menor al count especificado. Esto no significa que hubo algún error sino que para un mejor manejo de memoria y de la aplicacion (performance) lee hasta una cantidad máxima (variable) de datos.  
 
