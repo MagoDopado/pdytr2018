@@ -18,7 +18,7 @@ docker run -itd -v {rutaACarpetaPractica}:/pdytr \
 ```  
 por:
 ```bash
-docker-compose up -d
+sudo docker-compose up -d
 ```  
 y:
 ```bash
@@ -26,7 +26,7 @@ docker exec -it --user root pdytr bash
 ```  
 por:  
 ```bash
-docker-compose exec -u root compiler bash
+sudo docker-compose exec -u root compiler bash
 ```  
 
 
