@@ -3,6 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+
 typedef struct svc_req rpc_request;
 
 char* readFromFile(char* filename, int* size) {
@@ -33,7 +41,7 @@ bool_t read_1_svc(read_request request, read_response* result,  rpc_request* rpc
 	char* buffer = readFromFile(request.name, &size);
 	if (buffer == (char*) NULL) {
     printf("Error opening file\n");
-		return (bool_t) 0;
+		return (bool_t) FALSE;
 	}
 	buffer += request.offset;
 	int bytes_to_read = request.ammount;
@@ -45,8 +53,9 @@ bool_t read_1_svc(read_request request, read_response* result,  rpc_request* rpc
 	memcpy(result->buffer, buffer, bytes_to_read);
 	result->ammount = bytes_to_read;
 
+	printf("Served %d bytes\n", result->ammount);
 
-	return (bool_t) 1;
+	return (bool_t) TRUE;
 }
 
 bool_t write_1_svc(write_request req, int *result,  rpc_request* rpc)

@@ -17,26 +17,34 @@ int main (int argc, char* argv[])
 	char* filename;
 	parse_args(argc, argv, &host, &filename);
 
-	CLIENT*	clnt = clnt_create (host, FS_PROG, FS_VERSION, "udp");
-	if (clnt == NULL) {
+	CLIENT*	client = clnt_create (host, FS_PROG, FS_VERSION, "udp");
+	if (client == NULL) {
 		clnt_pcreateerror (host);
 		exit (1);
 	}
 
+	int buffer_size = 255;
+
 	read_request request;
 	request.name = filename;
 	request.offset = 0;
-	request.ammount = 255;
+	request.ammount = buffer_size;
 
-	read_response response;
-	enum clnt_stat status = read_1(request, &response, clnt);
+	read_response* response = malloc(sizeof(read_response));
+	response->buffer = calloc(buffer_size, sizeof(char));
+	enum clnt_stat status = read_1(request, response, client);
+
 	if (status != RPC_SUCCESS) {
-		clnt_perror (clnt, "call failed");
+		clnt_perror (client, "call failed");
 	}
 
-	printf("%s\n", response.buffer);
+	printf("%d\n", response->ammount);
+	printf("%s\n", response->buffer);
 
-	clnt_destroy (clnt);
+	free(response->buffer);
+	free(response);
+
+	clnt_destroy (client);
 
 	exit (0);
 }
