@@ -13,46 +13,54 @@
 
 typedef struct svc_req rpc_request;
 
-char* readFromFile(char* filename, int* size) {
-	//openfile and get size
+int readFromFile(char* filename, int offset, int ammount, char** buffer) {
+	*buffer = (char*) NULL;
+	// Assume ammount already validated.
+
+	//Validate file size.
 	FILE* fileD = fopen(filename, "r");
 	if (fileD == 0) {
-		return (char*) NULL;
+		return 0;
 	}
 
+	// Get filesize and validate request ammounts.
 	fseek(fileD, 0L, SEEK_END);
-	*size = ftell(fileD);
-	fseek(fileD, 0L, SEEK_SET);
-	char* buffer = calloc(*size, sizeof(char));
+	int file_size = ftell(fileD);
 
-	//read to buffer.
-	fread(buffer, sizeof(char), *size, fileD);
+	// Don't read out of stream.
+	if (file_size < offset) {
+		fclose(fileD);
+		return 0;
+	}
+	if (file_size < offset + ammount) {
+		ammount = file_size - offset;
+	}
 
-	//free(filename);
+	// File reading.
+	*buffer = calloc(ammount, sizeof(char));
+	fseek(fileD, offset, SEEK_SET);
+	int correctlyRead = fread(*buffer, sizeof(char), ammount, fileD);
 	fclose(fileD);
 
-	return buffer;
+	return correctlyRead;
 }
 
 bool_t read_1_svc(read_request request, read_response* result,  rpc_request* rpc)
 {
-	int size = 0;
-
-	char* buffer = readFromFile(request.name, &size);
-	if (buffer == (char*) NULL) {
-		printf("Error opening file\n");
+	if (request.ammount <= 0) {
+		printf("Invalid file size requested.\n");
 		return (bool_t) FALSE;
 	}
-	buffer += request.offset;
-	int bytes_to_read = request.ammount;
-	if (size < (request.offset + request.ammount)) {
-		bytes_to_read = size - request.offset;
+	
+	char* buffer;
+	int correctlyRead = readFromFile(request.name, request.offset, request.ammount, &buffer);
+	if (correctlyRead == 0 || buffer == (char*) NULL) {
+		printf("Error opening/reading file.\n");
+		return (bool_t) FALSE;
 	}
 
-	result->buffer = calloc(bytes_to_read + 1, sizeof(char));
-	memcpy(result->buffer, buffer, bytes_to_read);
-	result->ammount = bytes_to_read;
-
+	result->buffer = buffer;
+	result->ammount = correctlyRead;
 	printf("Served %d bytes\n", result->ammount);
 
 	return (bool_t) TRUE;
