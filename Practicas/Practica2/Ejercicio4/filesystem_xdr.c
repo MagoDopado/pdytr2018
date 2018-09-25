@@ -34,7 +34,7 @@ xdr_read_request (XDR *xdrs, read_request *objp)
 		 return FALSE;
 	 if (!xdr_int (xdrs, &objp->offset))
 		 return FALSE;
-	 if (!xdr_int (xdrs, &objp->ammount))
+	 if (!xdr_int (xdrs, &objp->size))
 		 return FALSE;
 	return TRUE;
 }
@@ -44,7 +44,7 @@ xdr_read_response (XDR *xdrs, read_response *objp)
 {
 	register int32_t *buf;
 
-	 if (!xdr_int (xdrs, &objp->ammount))
+	 if (!xdr_int (xdrs, &objp->size))
 		 return FALSE;
 	 if (!xdr_stream (xdrs, &objp->buffer))
 		 return FALSE;
@@ -58,7 +58,7 @@ xdr_write_request (XDR *xdrs, write_request *objp)
 
 	 if (!xdr_filename (xdrs, &objp->name))
 		 return FALSE;
-	 if (!xdr_int (xdrs, &objp->offset))
+	 if (!xdr_int (xdrs, &objp->size))
 		 return FALSE;
 	 if (!xdr_stream (xdrs, &objp->buffer))
 		 return FALSE;

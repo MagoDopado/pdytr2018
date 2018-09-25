@@ -28,7 +28,7 @@ int main (int argc, char* argv[])
 	read_request request;
 	request.name = filename;
 	request.offset = 0;
-	request.ammount = buffer_size;
+	request.size = buffer_size;
 
 	read_response* response = malloc(sizeof(read_response));
 	response->buffer = calloc(buffer_size, sizeof(char));
@@ -38,7 +38,7 @@ int main (int argc, char* argv[])
 		clnt_perror (client, "call failed");
 	}
 
-	printf("%d\n", response->ammount);
+	printf("%d\n", response->size);
 	printf("%s\n", response->buffer);
 
 	free(response->buffer);

@@ -22,19 +22,19 @@ typedef char *filename;
 struct read_request {
 	filename name;
 	int offset;
-	int ammount;
+	int size;
 };
 typedef struct read_request read_request;
 
 struct read_response {
-	int ammount;
+	int size;
 	stream buffer;
 };
 typedef struct read_response read_response;
 
 struct write_request {
 	filename name;
-	int offset;
+	int size;
 	stream buffer;
 };
 typedef struct write_request write_request;

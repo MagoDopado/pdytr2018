@@ -6,17 +6,17 @@ typedef string filename<255>;
 struct read_request {
 	filename name;
 	int offset;
-  int ammount;
+  int size;
 };
 
 struct read_response {
-	int ammount;
+	int size;
 	stream buffer;
 };
 
 struct write_request {
   filename name;
-	int offset;
+	int size;
   stream buffer;
 };
 

@@ -13,9 +13,9 @@
 
 typedef struct svc_req rpc_request;
 
-int readFromFile(char* filename, int offset, int ammount, char** buffer) {
+int readFromFile(char* filename, int offset, int size, char** buffer) {
 	*buffer = (char*) NULL;
-	// Assume ammount already validated.
+	// Assume size already validated.
 
 	//Validate file size.
 	FILE* fileD = fopen(filename, "r");
@@ -23,7 +23,7 @@ int readFromFile(char* filename, int offset, int ammount, char** buffer) {
 		return 0;
 	}
 
-	// Get filesize and validate request ammounts.
+	// Get filesize and validate request sizes.
 	fseek(fileD, 0L, SEEK_END);
 	int file_size = ftell(fileD);
 
@@ -32,14 +32,14 @@ int readFromFile(char* filename, int offset, int ammount, char** buffer) {
 		fclose(fileD);
 		return 0;
 	}
-	if (file_size < offset + ammount) {
-		ammount = file_size - offset;
+	if (file_size < offset + size) {
+		size = file_size - offset;
 	}
 
 	// File reading.
-	*buffer = calloc(ammount, sizeof(char));
+	*buffer = calloc(size, sizeof(char));
 	fseek(fileD, offset, SEEK_SET);
-	int correctlyRead = fread(*buffer, sizeof(char), ammount, fileD);
+	int correctlyRead = fread(*buffer, sizeof(char), size, fileD);
 	fclose(fileD);
 
 	return correctlyRead;
@@ -47,21 +47,21 @@ int readFromFile(char* filename, int offset, int ammount, char** buffer) {
 
 bool_t read_1_svc(read_request request, read_response* result,  rpc_request* rpc)
 {
-	if (request.ammount <= 0) {
+	if (request.size <= 0) {
 		printf("Invalid file size requested.\n");
 		return (bool_t) FALSE;
 	}
-	
+
 	char* buffer;
-	int correctlyRead = readFromFile(request.name, request.offset, request.ammount, &buffer);
+	int correctlyRead = readFromFile(request.name, request.offset, request.size, &buffer);
 	if (correctlyRead == 0 || buffer == (char*) NULL) {
 		printf("Error opening/reading file.\n");
 		return (bool_t) FALSE;
 	}
 
 	result->buffer = buffer;
-	result->ammount = correctlyRead;
-	printf("Served %d bytes\n", result->ammount);
+	result->size = correctlyRead;
+	printf("Served %d bytes\n", result->size);
 
 	return (bool_t) TRUE;
 }
