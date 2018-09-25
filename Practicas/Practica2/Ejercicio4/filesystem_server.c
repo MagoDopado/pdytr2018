@@ -14,24 +14,24 @@
 typedef struct svc_req rpc_request;
 
 char* readFromFile(char* filename, int* size) {
-  //openfile and get size
-  FILE* fileD = fopen(filename, "r");
-  if (fileD == 0) {
-    return (char*) NULL;
-  }
+	//openfile and get size
+	FILE* fileD = fopen(filename, "r");
+	if (fileD == 0) {
+		return (char*) NULL;
+	}
 
-  fseek(fileD, 0L, SEEK_END);
-  *size = ftell(fileD);
-  fseek(fileD, 0L, SEEK_SET);
-  char* buffer = calloc(*size, sizeof(char));
+	fseek(fileD, 0L, SEEK_END);
+	*size = ftell(fileD);
+	fseek(fileD, 0L, SEEK_SET);
+	char* buffer = calloc(*size, sizeof(char));
 
-  //read to buffer.
-  fread(buffer, sizeof(char), *size, fileD);
+	//read to buffer.
+	fread(buffer, sizeof(char), *size, fileD);
 
-  //free(filename);
-  fclose(fileD);
+	//free(filename);
+	fclose(fileD);
 
-  return buffer;
+	return buffer;
 }
 
 bool_t read_1_svc(read_request request, read_response* result,  rpc_request* rpc)
@@ -40,7 +40,7 @@ bool_t read_1_svc(read_request request, read_response* result,  rpc_request* rpc
 
 	char* buffer = readFromFile(request.name, &size);
 	if (buffer == (char*) NULL) {
-    printf("Error opening file\n");
+		printf("Error opening file\n");
 		return (bool_t) FALSE;
 	}
 	buffer += request.offset;
