@@ -8,13 +8,13 @@
 
 #### Eusebi Cirano, Legajo 12469/2  
 
-#### [Repo](https://github.com/MagoDopado/pdytr2018)
+#### [Repository](https://github.com/MagoDopado/pdytr2018)
 
 </br></br></br></br></br></br>
 
 
 
-#### 1 Prar los ejemplos de RPC proporcionados (\*.tar, analizar en el orden dado a los nombres de los archivos):
+#### 1 Para los ejemplos de RPC proporcionados (\*.tar, analizar en el orden dado a los nombres de los archivos):
 
 ##### a.- Mostrar cómo serían los mismos procedimientos si fueran locales, es decir haciendo el proceso inverso del realizado en la clase de explicación de RPC.
 
