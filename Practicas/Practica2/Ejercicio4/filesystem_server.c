@@ -45,7 +45,7 @@ int readFromFile(char* filename, int offset, int size, char** buffer) {
 	return correctlyRead;
 }
 
-bool_t read_1_svc(read_request request, read_response* result,  rpc_request* rpc)
+bool_t pdytr_read_1_svc(read_request request, read_response* result,  rpc_request* rpc)
 {
 	if (request.size <= 0) {
 		printf("Invalid file size requested.\n");
@@ -66,7 +66,18 @@ bool_t read_1_svc(read_request request, read_response* result,  rpc_request* rpc
 	return (bool_t) TRUE;
 }
 
-bool_t write_1_svc(write_request req, int *result,  rpc_request* rpc)
+bool_t pdytr_write_1_svc(write_request req, int *result,  rpc_request* rpc)
+{
+	bool_t retval;
+
+	/*
+	 * insert server code here
+	 */
+
+	return retval;
+}
+
+bool_t pdytr_file_size_1_svc(char* filename, int *result,  rpc_request* rpc)
 {
 	bool_t retval;
 

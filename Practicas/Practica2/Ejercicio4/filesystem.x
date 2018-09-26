@@ -22,7 +22,8 @@ struct write_request {
 
 program FS_PROG {
    version FS_VERSION {
-     read_response read(read_request req) = 1;
-     int write(write_request req) = 2;
+     read_response pdytr_read(read_request req) = 1;
+     int pdytr_write(write_request req) = 2;
+     int pdytr_file_size(filename name) = 3;
    } = VERSION_NUMBER;
 } = 555553555;

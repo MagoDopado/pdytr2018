@@ -17,27 +17,35 @@
 #endif
 
 int
-_read_1 (read_request  *argp, void *result, struct svc_req *rqstp)
+_pdytr_read_1 (read_request  *argp, void *result, struct svc_req *rqstp)
 {
-	return (read_1_svc(*argp, result, rqstp));
+	return (pdytr_read_1_svc(*argp, result, rqstp));
 }
 
 int
-_write_1 (write_request  *argp, void *result, struct svc_req *rqstp)
+_pdytr_write_1 (write_request  *argp, void *result, struct svc_req *rqstp)
 {
-	return (write_1_svc(*argp, result, rqstp));
+	return (pdytr_write_1_svc(*argp, result, rqstp));
+}
+
+int
+_pdytr_file_size_1 (filename  *argp, void *result, struct svc_req *rqstp)
+{
+	return (pdytr_file_size_1_svc(*argp, result, rqstp));
 }
 
 static void
 fs_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 {
 	union {
-		read_request read_1_arg;
-		write_request write_1_arg;
+		read_request pdytr_read_1_arg;
+		write_request pdytr_write_1_arg;
+		filename pdytr_file_size_1_arg;
 	} argument;
 	union {
-		read_response read_1_res;
-		int write_1_res;
+		read_response pdytr_read_1_res;
+		int pdytr_write_1_res;
+		int pdytr_file_size_1_res;
 	} result;
 	bool_t retval;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -48,16 +56,22 @@ fs_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		(void) svc_sendreply (transp, (xdrproc_t) xdr_void, (char *)NULL);
 		return;
 
-	case read:
+	case pdytr_read:
 		_xdr_argument = (xdrproc_t) xdr_read_request;
 		_xdr_result = (xdrproc_t) xdr_read_response;
-		local = (bool_t (*) (char *, void *,  struct svc_req *))_read_1;
+		local = (bool_t (*) (char *, void *,  struct svc_req *))_pdytr_read_1;
 		break;
 
-	case write:
+	case pdytr_write:
 		_xdr_argument = (xdrproc_t) xdr_write_request;
 		_xdr_result = (xdrproc_t) xdr_int;
-		local = (bool_t (*) (char *, void *,  struct svc_req *))_write_1;
+		local = (bool_t (*) (char *, void *,  struct svc_req *))_pdytr_write_1;
+		break;
+
+	case pdytr_file_size:
+		_xdr_argument = (xdrproc_t) xdr_filename;
+		_xdr_result = (xdrproc_t) xdr_int;
+		local = (bool_t (*) (char *, void *,  struct svc_req *))_pdytr_file_size_1;
 		break;
 
 	default:

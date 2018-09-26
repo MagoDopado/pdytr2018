@@ -32,7 +32,7 @@ int main (int argc, char* argv[])
 
 	read_response* response = malloc(sizeof(read_response));
 	response->buffer = calloc(buffer_size, sizeof(char));
-	enum clnt_stat status = read_1(request, response, client);
+	enum clnt_stat status = pdytr_read_1(request, response, client);
 
 	if (status != RPC_SUCCESS) {
 		clnt_perror (client, "call failed");

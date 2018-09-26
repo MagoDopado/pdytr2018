@@ -43,21 +43,27 @@ typedef struct write_request write_request;
 #define FS_VERSION 1
 
 #if defined(__STDC__) || defined(__cplusplus)
-#define read 1
-extern  enum clnt_stat read_1(read_request , read_response *, CLIENT *);
-extern  bool_t read_1_svc(read_request , read_response *, struct svc_req *);
-#define write 2
-extern  enum clnt_stat write_1(write_request , int *, CLIENT *);
-extern  bool_t write_1_svc(write_request , int *, struct svc_req *);
+#define pdytr_read 1
+extern  enum clnt_stat pdytr_read_1(read_request , read_response *, CLIENT *);
+extern  bool_t pdytr_read_1_svc(read_request , read_response *, struct svc_req *);
+#define pdytr_write 2
+extern  enum clnt_stat pdytr_write_1(write_request , int *, CLIENT *);
+extern  bool_t pdytr_write_1_svc(write_request , int *, struct svc_req *);
+#define pdytr_file_size 3
+extern  enum clnt_stat pdytr_file_size_1(filename , int *, CLIENT *);
+extern  bool_t pdytr_file_size_1_svc(filename , int *, struct svc_req *);
 extern int fs_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
-#define read 1
-extern  enum clnt_stat read_1();
-extern  bool_t read_1_svc();
-#define write 2
-extern  enum clnt_stat write_1();
-extern  bool_t write_1_svc();
+#define pdytr_read 1
+extern  enum clnt_stat pdytr_read_1();
+extern  bool_t pdytr_read_1_svc();
+#define pdytr_write 2
+extern  enum clnt_stat pdytr_write_1();
+extern  bool_t pdytr_write_1_svc();
+#define pdytr_file_size 3
+extern  enum clnt_stat pdytr_file_size_1();
+extern  bool_t pdytr_file_size_1_svc();
 extern int fs_prog_1_freeresult ();
 #endif /* K&R C */
 
