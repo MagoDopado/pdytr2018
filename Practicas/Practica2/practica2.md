@@ -18,6 +18,8 @@
 
 ##### a.- Mostrar cómo serían los mismos procedimientos si fueran locales, es decir haciendo el proceso inverso del realizado en la clase de explicación de RPC.
 
+En caso de ser locales, los métodos estarían implementados todos en un mismo ejecutable, donde se llama a la rutina RPC se llamaría la rutina implementada localmente. No serían necesarios los rpcgen files, stubs ni xdr.
+
 ##### b.- Ejecutar los procesos y mostrar la salida obtenida (del "cliente" y del "servidor") en cada uno de los casos.  
 
 
@@ -79,4 +81,28 @@ Sum is 18
 ```
 
 
-##### c.- Mosstrar experimentos donde se produzcan errores de conectividad del lado del cliente y del lado del servidor. Si es necesario realice cambios mínimos para, por ejemplo incluir sleep() o exit(), de forma tal que no se reciban comunicaciones o no haya receptor para las comunicaciones. Verifique con UDP y con TCP.
+##### c.- Mostrar experimentos donde se produzcan errores de conectividad del lado del cliente y del lado del servidor. Si es necesario realice cambios mínimos para, por ejemplo incluir sleep() o exit(), de forma tal que no se reciban comunicaciones o no haya receptor para las comunicaciones. Verifique con UDP y con TCP.
+
+A partir de agregar sleeps al cliente no se detectan errores o interrupciones en las conexiones.  
+Si se agregan sleeps al servidor en cambio, verificamos que los clientes tienen un timeout, configurable a partir del método `clnt_control()` y en caso de exeder el timeout el cliente envía un mensaje de error.  
+Si se agregan `exit()` al servidor el cliente envía un mensaje de error y la comunicación se corta.
+
+Tanto en TCP como en UDP se detectan los mismos resultados.
+
+
+#### 2 Describir/analizar las opciones
+##### a.- -N
+Utilizado para aceptar multiples argumentos y argumentos por valor en las rutinas RPC.
+##### b.- -M y -A
+-M sirve para habilitar el modo Multithread-safe, donde el valor de retorno es pasado como argumento a la rutina del servidor en vez de utilizar variables estáticas (no thread-safe).
+-A habilita el modo Multithread-safe-auto que genera un thread por cada request nueva.
+
+Lo que se debe tener en cuenta del lado del servidor es que al habilitar las funciones Multithread, se debe hacer la sincronización correspondiente para que todas las rutinas sean thread-safe.  
+
+Si se decide agregar multiples threads del lado del cliente (a travez de cualquier implementación standard ej: pthreads/openMP), es el usuario el que debe asegurar la seguridad del mismo ya que RPC no influye de ninguna manera en este flujo de ejecución.  
+
+#### 3 Analizar la _transparencia_ de RPC en cuanto al manejo de parámetros de los procedimientos remotos. Considerar lo que sucede en caso de los valores de retorno. Puede aprovechar los ejemplos provistos.  
+
+RPC se encarga de mantener al usuario abstracto de los llamados remotos. No hay diferencia entre un llamado a función local y uno remoto en cuanto al código (a excepción de la inicialización y configuración del cliente). Del mismo modo, el servidor recibe argumentos como si fueran de un llamado local, por lo que muy facilmente se pueden portar aplicaciones monolíticas en funcionamiento a RPC extrayendo las rutinas a distribuir y generando el archivo de descripción.
+
+#### 4 Con la finalidad de contar con una versión muy restringida de un sistema de archivos remoto, en el

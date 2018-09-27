@@ -40,3 +40,9 @@ sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-c
 docker-compose --version
 ```
 Fuente https://docs.docker.com/compose/install/#install-compose
+
+
+#### > Generar archivo basura con tamaño parametrizable:  
+```bash
+head -c 1M </dev/urandom > trash.txt
+```
