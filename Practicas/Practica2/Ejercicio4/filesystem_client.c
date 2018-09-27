@@ -11,6 +11,22 @@ void parse_args(int argc, char* argv[], char** host, char** filename)
 	*filename = argv[2];
 }
 
+// Open file to append data
+FILE* createAndOpenFile(char* filename) {
+	char* newFile = calloc(strlen(filename)+7, sizeof(char));
+	newFile = strcat(newFile, "client-");
+	newFile = strcat(newFile, filename);
+	return fopen(newFile, "a");
+}
+
+void closeFile(FILE* fileD) {
+	fclose(fileD);
+}
+
+int updateFile(FILE* fileD, char* buffer, int size) {
+	return fwrite(buffer, sizeof(char), size, fileD);
+}
+
 int main (int argc, char* argv[])
 {
 	char* host;
@@ -23,6 +39,13 @@ int main (int argc, char* argv[])
 		exit (1);
 	}
 
+	int file_size = 0;
+	enum clnt_stat status = pdytr_file_size_1(filename, &file_size, client);
+	if (status != RPC_SUCCESS) {
+		clnt_perror (client, "call failed");
+	}
+	printf("file_size_1 response: %d\n", file_size);
+
 	int buffer_size = 255;
 
 	read_request request;
@@ -32,14 +55,25 @@ int main (int argc, char* argv[])
 
 	read_response* response = malloc(sizeof(read_response));
 	response->buffer = calloc(buffer_size, sizeof(char));
-	enum clnt_stat status = pdytr_read_1(request, response, client);
 
-	if (status != RPC_SUCCESS) {
-		clnt_perror (client, "call failed");
-	}
+	int currentBytes = 0;
+	FILE* fileD = createAndOpenFile(filename);
+	do {
+		status = pdytr_read_1(request, response, client);
 
-	printf("%d\n", response->size);
-	printf("%s\n", response->buffer);
+		if (status != RPC_SUCCESS) {
+			clnt_perror (client, "call failed");
+		}
+
+		currentBytes+= response->size;
+		request.offset = currentBytes;
+
+		updateFile(fileD, response->buffer, response->size);
+
+		printf("read_1 response size: %d\n", response->size);
+		printf("read_1 response buffer: %s\n", response->buffer);
+	} while (currentBytes < file_size);
+	closeFile(fileD);
 
 	free(response->buffer);
 	free(response);

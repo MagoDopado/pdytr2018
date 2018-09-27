@@ -3,7 +3,7 @@ version: '3'
 services:
   compiler:
     image: gmaron/pdytr:latest
-    hostname: pdytr
+    hostname: compiler
     networks:
       - dockerBridge
     ports:

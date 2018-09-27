@@ -13,6 +13,21 @@
 
 typedef struct svc_req rpc_request;
 
+int sizeFromFile(char* filename) {
+	//Validate file size.
+	FILE* fileD = fopen(filename, "r");
+	if (fileD == 0) {
+		return 0;
+	}
+
+	// Get filesize and validate request sizes.
+	fseek(fileD, 0L, SEEK_END);
+	int file_size = ftell(fileD);
+
+	fclose(fileD);
+	return file_size;
+}
+
 int readFromFile(char* filename, int offset, int size, char** buffer) {
 	*buffer = (char*) NULL;
 	// Assume size already validated.
@@ -77,15 +92,10 @@ bool_t pdytr_write_1_svc(write_request req, int *result,  rpc_request* rpc)
 	return retval;
 }
 
-bool_t pdytr_file_size_1_svc(char* filename, int *result,  rpc_request* rpc)
+bool_t pdytr_file_size_1_svc(char* filename, int* result,  rpc_request* rpc)
 {
-	bool_t retval;
-
-	/*
-	 * insert server code here
-	 */
-
-	return retval;
+	*result = sizeFromFile(filename);
+	return (bool_t) TRUE;
 }
 
 int
