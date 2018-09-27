@@ -105,4 +105,15 @@ Si se decide agregar multiples threads del lado del cliente (a travez de cualqui
 
 RPC se encarga de mantener al usuario abstracto de los llamados remotos. No hay diferencia entre un llamado a función local y uno remoto en cuanto al código (a excepción de la inicialización y configuración del cliente). Del mismo modo, el servidor recibe argumentos como si fueran de un llamado local, por lo que muy facilmente se pueden portar aplicaciones monolíticas en funcionamiento a RPC extrayendo las rutinas a distribuir y generando el archivo de descripción.
 
-#### 4 Con la finalidad de contar con una versión muy restringida de un sistema de archivos remoto, en el
+#### 4 Con la finalidad de contar con una versión muy restringida de un sistema de archivos remoto.
+
+
+#### 5 Timeouts en RPC
+
+##### a. Desarrollar un experimento que muestre el timeout definido para las llamadas RPC y el promedio de tiempo de una llamada RPC.
+
+
+##### b. Reducir el timeout de las llamadas RPC a un 10% menos del promerio encontrado anteriormente. 
+
+
+##### c.
