@@ -28,6 +28,22 @@ int sizeFromFile(char* filename) {
 	return file_size;
 }
 
+// Open file to append data
+FILE* openOrCreateFile(char* filename) {
+	char* newFilename = calloc(strlen(filename)+7, sizeof(char));
+	newFilename = strcat(newFilename, "server-");
+	newFilename = strcat(newFilename, filename);
+	return fopen(newFilename, "a");
+}
+
+void closeFile(FILE* fileD) {
+	fclose(fileD);
+}
+
+int updateFile(FILE* fileD, char* buffer, int size) {
+	return fwrite(buffer, sizeof(char), size, fileD);
+}
+
 int readFromFile(char* filename, int offset, int size, char** buffer) {
 	*buffer = (char*) NULL;
 	// Assume size already validated.
@@ -76,20 +92,21 @@ bool_t pdytr_read_1_svc(read_request request, read_response* result,  rpc_reques
 
 	result->buffer = buffer;
 	result->size = correctlyRead;
-	printf("Served %d bytes\n", result->size);
+	printf("Served %d bytes\t", result->size);
 
 	return (bool_t) TRUE;
 }
 
 bool_t pdytr_write_1_svc(write_request req, int *result,  rpc_request* rpc)
 {
-	bool_t retval;
 
-	/*
-	 * insert server code here
-	 */
+	FILE* fileD = openOrCreateFile(req.name);
+	*result = updateFile(fileD, req.buffer, req.size);
+	closeFile(fileD);
 
-	return retval;
+	printf("Recibe %d bytes\n", req.size);
+
+	return (bool_t) TRUE;
 }
 
 bool_t pdytr_file_size_1_svc(char* filename, int* result,  rpc_request* rpc)
@@ -102,10 +119,6 @@ int
 fs_prog_1_freeresult (SVCXPRT *transp, xdrproc_t xdr_result, caddr_t result)
 {
 	xdr_free (xdr_result, result);
-
-	/*
-	 * Insert additional freeing code here, if needed
-	 */
 
 	return 1;
 }

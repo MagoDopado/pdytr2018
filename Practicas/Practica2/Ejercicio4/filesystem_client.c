@@ -12,11 +12,8 @@ void parse_args(int argc, char* argv[], char** host, char** filename)
 }
 
 // Open file to append data
-FILE* createAndOpenFile(char* filename) {
-	char* newFile = calloc(strlen(filename)+7, sizeof(char));
-	newFile = strcat(newFile, "client-");
-	newFile = strcat(newFile, filename);
-	return fopen(newFile, "a");
+FILE* createOrOpenFile(char* filename) {
+	return fopen(filename, "a");
 }
 
 void closeFile(FILE* fileD) {
@@ -25,6 +22,50 @@ void closeFile(FILE* fileD) {
 
 int updateFile(FILE* fileD, char* buffer, int size) {
 	return fwrite(buffer, sizeof(char), size, fileD);
+}
+
+void sentFileToServer(char* newFilename, CLIENT* client, int buffer_size) {
+	FILE* fileD = fopen(newFilename, "r");
+	printf ("newFilename: %s\n", newFilename);
+
+	fseek(fileD, 0L, SEEK_END);
+	int file_size = ftell(fileD);
+
+	char* buffer = calloc(buffer_size, sizeof(char));
+	int currentReadBytes = 0;
+	enum clnt_stat status;
+
+	printf ("currentReadBytes: %d \t file_size: %d\n", currentReadBytes, file_size);
+
+	do {
+		int readSize = buffer_size;
+		if (readSize > (file_size - currentReadBytes)) {
+			readSize = file_size - currentReadBytes;
+		}
+
+		//read to buffer.
+		fseek(fileD, currentReadBytes, SEEK_SET);
+		int readBytes = fread(buffer, sizeof(char), readSize, fileD);
+
+		write_request w_request;
+		w_request.name = newFilename;
+		w_request.size = readBytes;
+		w_request.buffer = buffer;
+
+		int serverReadSize = 0;
+		status = pdytr_write_1(w_request, &serverReadSize, client);
+
+		if (status != RPC_SUCCESS) {
+			clnt_perror (client, "call failed");
+		}
+
+		currentReadBytes += serverReadSize;
+		printf ("currentReadBytes: %d \t serverReadSize: %d\t readBytes: %d\n", currentReadBytes, serverReadSize, readBytes);
+
+	} while (currentReadBytes < file_size);
+
+	free(buffer);
+	closeFile(fileD);
 }
 
 int main (int argc, char* argv[])
@@ -44,7 +85,6 @@ int main (int argc, char* argv[])
 	if (status != RPC_SUCCESS) {
 		clnt_perror (client, "call failed");
 	}
-	printf("file_size_1 response: %d\n", file_size);
 
 	int buffer_size = 255;
 
@@ -57,7 +97,11 @@ int main (int argc, char* argv[])
 	response->buffer = calloc(buffer_size, sizeof(char));
 
 	int currentBytes = 0;
-	FILE* fileD = createAndOpenFile(filename);
+	char* newFilename = calloc(strlen(filename)+7, sizeof(char));
+	newFilename = strcat(newFilename, "client-");
+	newFilename = strcat(newFilename, filename);
+
+	FILE* fileD = createOrOpenFile(newFilename);
 	do {
 		status = pdytr_read_1(request, response, client);
 
@@ -70,13 +114,13 @@ int main (int argc, char* argv[])
 
 		updateFile(fileD, response->buffer, response->size);
 
-		printf("read_1 response size: %d\n", response->size);
-		printf("read_1 response buffer: %s\n", response->buffer);
 	} while (currentBytes < file_size);
 	closeFile(fileD);
 
 	free(response->buffer);
 	free(response);
+
+	sentFileToServer(newFilename, client, buffer_size);
 
 	clnt_destroy (client);
 
