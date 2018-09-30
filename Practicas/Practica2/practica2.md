@@ -131,9 +131,11 @@ Todos los archivos escritos por el servidor reciben el prefijo `server`.
 #### 5 Timeouts en RPC
 
 ##### a. Desarrollar un experimento que muestre el timeout definido para las llamadas RPC y el promedio de tiempo de una llamada RPC.
+En la carpeta del ejercicio5 hemos programado un cliente y un servidor muy sencillos para probarlo.
+Leyendo la documentación de RPC, sabemos que el timeout por defecto que usa es de 25 segundos.
 
+##### b. Reducir el timeout de las llamadas RPC a un 10% menos del promedio encontrado anteriormente.
+Seteando el timeout del servidor en 22 segundo, funciona correctamente sin devolver ningún timeout.
 
-##### b. Reducir el timeout de las llamadas RPC a un 10% menos del promerio encontrado anteriormente.
-
-
-##### c.
+##### c.Desarrollar un cliente/servidor RPC de forma tal que siempre se supere el tiempo de timeout. Una forma sencilla puede utilizar el tiempo de timeout como parámetro del procedimiento remoto, donde se lo utiliza del lado del servidor en una llamada a sleep( ), por ejemplo.
+La tercer función declarada en el timeout.x (some_function_to_26) siempre que se llame, dará timeout.

@@ -1,10 +1,26 @@
 #include "timeout.h"
 
-bool_t
-some_function_1_svc(int *result, struct svc_req *rqstp)
+bool_t some_function_1_svc(int *result, struct svc_req *rqstp)
 {
 	printf("SERVER: some_function_1_svc start\n");
+	// sleep(26); Exercise 5.A
 	printf("SERVER: some_function_1_svc finish\n");
+	return 1;
+}
+
+bool_t some_function_to_22_1_svc(int *result, struct svc_req *rqstp)
+{
+	printf("SERVER: some_function_to_22_1_svc start\n");
+	sleep(22);
+	printf("SERVER: some_function_to_22_1_svc finish\n");
+	return 1;
+}
+
+bool_t some_function_to_26_1_svc(int *result, struct svc_req *rqstp)
+{
+	printf("SERVER: some_function_to_26_1_svc start\n");
+	sleep(26);
+	printf("SERVER: some_function_to_26_1_svc finish\n");
 	return 1;
 }
 

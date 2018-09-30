@@ -1,13 +1,42 @@
 #include "timeout.h"
 
-
-void to_prog_1(char *host) {
-
-}
-
-
 double dwalltime();
 
+void timeout_22(CLIENT* clnt) {
+	enum clnt_stat retval_22;
+	int result_22;
+
+	printf("CLIENT: some_function_to_22_1 start\n");
+
+	double startTime = dwalltime();
+	retval_22 = some_function_to_22_1(&result_22, clnt);
+	double endTime = dwalltime();
+	double delta = (endTime - startTime);
+
+	printf("CLIENT: some_function_to_22_1 finish\n");
+
+	printf("timeout_22: Send time %f ms\n", delta * 1000);
+}
+
+void timeout_25(CLIENT* clnt) {
+	enum clnt_stat retval_25;
+	int result_25;
+
+	printf("CLIENT: some_function_to_26_1 start\n");
+
+	double startTime = dwalltime();
+	retval_25 = some_function_to_26_1(&result_25, clnt);
+	double endTime = dwalltime();
+	double delta = (endTime - startTime);
+
+	if (retval_25 != RPC_SUCCESS) {
+		clnt_perror (clnt, "call failed - should be timeout");
+	}
+
+	printf("CLIENT: some_function_to_26_1 finish\n");
+
+	printf("some_function_to_26_1: Send time %f ms\n", delta * 1000);
+}
 
 int main (int argc, char *argv[])
 {
@@ -19,7 +48,7 @@ int main (int argc, char *argv[])
 	}
 	host = argv[1];
 
-	CLIENT *clnt;
+	CLIENT* clnt;
 	enum clnt_stat retval_1;
 	int result_1;
 
@@ -40,7 +69,6 @@ int main (int argc, char *argv[])
 
 		double startTime = dwalltime();
 
-
 		retval_1 = some_function_1(&result_1, clnt);
 
 		double endTime = dwalltime();
@@ -51,6 +79,10 @@ int main (int argc, char *argv[])
 
 		printf("CLIENT: to_prog_1 finish\n");
 	}
+	printf("\nAverage time %f ms\n", (totalTime * 1000) / iterations);
+
+	timeout_22(clnt);
+	timeout_25(clnt);
 
 	clnt_destroy (clnt);
 
