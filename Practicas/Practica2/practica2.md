@@ -105,15 +105,35 @@ Si se decide agregar multiples threads del lado del cliente (a travez de cualqui
 
 RPC se encarga de mantener al usuario abstracto de los llamados remotos. No hay diferencia entre un llamado a función local y uno remoto en cuanto al código (a excepción de la inicialización y configuración del cliente). Del mismo modo, el servidor recibe argumentos como si fueran de un llamado local, por lo que muy facilmente se pueden portar aplicaciones monolíticas en funcionamiento a RPC extrayendo las rutinas a distribuir y generando el archivo de descripción.
 
-#### 4 Con la finalidad de contar con una versión muy restringida de un sistema de archivos remoto.
+#### 4 Implementar una versión muy restringida de un sistema de archivos remoto. Documente todas las decisiones tomadas.
 
+Se definieron 3 métodos de comunicación RPC:  
+- FileSize(string size) que retorna la cantidad de bytes de un archivo.
+- Read(read_request) que a partir de un filename, offset y size retorna la cantidad de bytes leidos y un buffer con esos bytes.
+- Write(write_request) que da un filename, un buffer y una cantidad de bytes y retorna la cantidad de bytes correctamente escritos al final del archivo dado (crea en caso de que no exista).
+
+Se decidió utilizar el flag -M para tener un mejor manejo de la memoria utilizada por el servidor y aceptar peticiones en concurrente.
+
+Para la comunicación se usaron structs nativos de C con el tipo de dato XDR string<>, que es el más básico para manejo de buffers.
+
+###### Lectura
+Para la lectura el cliente pide el tamaño del archivo y aloca un buffer de tamaño fijo. Itera pidiendo lecturas actualizando el offset y utilizando el mismo buffer de para leer y escribir. Esto ahorra peticiones de memoria extra y permite transmitir archivos de tamaños arbitrariamente grandes. Del mismo modo, el archivo se mantiene lo más actualizado posible permitiendo (si se quisiera) desarrollar la reasunción de una descarga desde un punto.   
+Del lado del servidor, cada petición pide un file handler nuevo al SO en modo texto, se lee sólo el pedazo de archivo requerido y se libera el handle cuanto antes. Esto nos permite correspondientemente soportar peticiones de archivos arbitrariamente grandes. Se tuvo en cuenta mantener las peticiones de manera thread safe.
+
+###### Escritura
+El cliente abre un archivo, obtiene su tamaño y aloca un buffer único de tamaño determinado. Itera leyendo de disco y enviando a red desde el mismo buffer actualizando el offset a partir de la respuesta satisfactoria del servidor.
+
+El servidor acepta los bytes, busca el archivo (o lo crea en caso de no existir) y agrega los bytes al mismo. En caso de peticiones concurrentes el SO deniega el acceso al archivo.
+
+Todos los archivos leidos por el cliente reciben el prefijo `client`.  
+Todos los archivos escritos por el servidor reciben el prefijo `server`.
 
 #### 5 Timeouts en RPC
 
 ##### a. Desarrollar un experimento que muestre el timeout definido para las llamadas RPC y el promedio de tiempo de una llamada RPC.
 
 
-##### b. Reducir el timeout de las llamadas RPC a un 10% menos del promerio encontrado anteriormente. 
+##### b. Reducir el timeout de las llamadas RPC a un 10% menos del promerio encontrado anteriormente.
 
 
 ##### c.
