@@ -27,7 +27,7 @@ public class AskRemote
             int bufferlength = 100;
             byte[] buffer = new byte[bufferlength];
 
-            Path p = Paths.get("./textTest.txt");
+            Path p = Paths.get("../../textTest.txt");
 
             try (InputStream in = Files.newInputStream(p);
                  BufferedReader reader =

@@ -1,0 +1,6 @@
+line 1 - textTest.txt :D
+line 2 - more lines
+line 3
+line 4
+line line line
+
