@@ -4,13 +4,13 @@
 # compiler and client
 cd /pdytr/Practicas/Practica3/tp3/src
 
-#compiler or client
+# compiler or client
 javac -d ../target ./*.java
 
-#compiler
+# compiler
 java -cp ../target/ StartRemoteObject
 
-#client
+# client
 java -cp ../target/ AskRemote compiler
 
 

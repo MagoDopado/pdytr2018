@@ -24,8 +24,6 @@ public class AskRemote
         try {
             String rname = "//" + args[0] + ":" + Registry.REGISTRY_PORT + "/remote";
             IfaceRemoteClass remote = (IfaceRemoteClass) Naming.lookup(rname);
-            int bufferlength = 100;
-            byte[] buffer = new byte[bufferlength];
 
             Path p = Paths.get("../../textTest.txt");
 
@@ -40,7 +38,6 @@ public class AskRemote
                 System.err.println(x);
             }
 
-//            remote.sendThisBack(buffer);
             System.out.println("Done");
         } catch (Exception e) {
             e.printStackTrace();
