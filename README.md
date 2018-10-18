@@ -39,6 +39,7 @@ sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-c
 
 docker-compose --version
 ```
+docker-compose version 1.22.0
 Fuente https://docs.docker.com/compose/install/#install-compose
 
 
