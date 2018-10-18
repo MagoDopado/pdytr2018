@@ -4,6 +4,9 @@
 # compiler and client
 cd /pdytr/Practicas/Practica3/tp3/src
 
+# create target folder
+mkdir ../target
+
 # compiler or client
 javac -d ../target ./*.java
 
