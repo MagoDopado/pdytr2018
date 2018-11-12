@@ -10,5 +10,10 @@ import java.rmi.RemoteException;
 public interface IfaceRemoteClass extends Remote
 {
     /* It will be possible to invoke this method from an application in other JVM */
-    public String sendThisBack(String data) throws RemoteException;
+    //Read.
+    public int getSize(String name) throws RemoteException;
+    public char[] readBuffer(String name, int offset, int size) throws RemoteException;
+
+    //Write
+    public int writeBuffer(String name, int size, char[] buffer) throws RemoteException;
 }

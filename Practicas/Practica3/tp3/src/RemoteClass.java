@@ -16,9 +16,22 @@ public class RemoteClass extends UnicastRemoteObject implements IfaceRemoteClass
         super();
     }
     /* Remote method implementation */
-    public String sendThisBack(String data) throws RemoteException
+    //Read.
+    public int getSize(String name) throws RemoteException
     {
-        System.out.println(data);
-        return data;
+      return 1024;
+    }
+
+    public char[] readBuffer(String name, int offset, int size) throws RemoteException
+    {
+      char[] array = new char[1];
+      array[0] = 'a';
+      return array;
+    }
+
+    //Write
+    public int writeBuffer(String name, int size, char[] buffer) throws RemoteException
+    {
+      return 0;
     }
 }
