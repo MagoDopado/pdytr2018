@@ -11,6 +11,7 @@ mkdir ../target
 javac -d ../target ./*.java
 
 # compiler
+rmiregistry &
 java -cp ../target/ StartRemoteObject
 
 # client
