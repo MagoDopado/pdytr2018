@@ -22,6 +22,18 @@ _some_function_1 (void  *argp, void *result, struct svc_req *rqstp)
 	return (some_function_1_svc(result, rqstp));
 }
 
+int
+_some_function_to_22_1 (void  *argp, void *result, struct svc_req *rqstp)
+{
+	return (some_function_to_22_1_svc(result, rqstp));
+}
+
+int
+_some_function_to_26_1 (void  *argp, void *result, struct svc_req *rqstp)
+{
+	return (some_function_to_26_1_svc(result, rqstp));
+}
+
 static void
 to_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 {
@@ -30,6 +42,8 @@ to_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 	} argument;
 	union {
 		int some_function_1_res;
+		int some_function_to_22_1_res;
+		int some_function_to_26_1_res;
 	} result;
 	bool_t retval;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -44,6 +58,18 @@ to_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		_xdr_argument = (xdrproc_t) xdr_void;
 		_xdr_result = (xdrproc_t) xdr_int;
 		local = (bool_t (*) (char *, void *,  struct svc_req *))_some_function_1;
+		break;
+
+	case some_function_to_22:
+		_xdr_argument = (xdrproc_t) xdr_void;
+		_xdr_result = (xdrproc_t) xdr_int;
+		local = (bool_t (*) (char *, void *,  struct svc_req *))_some_function_to_22_1;
+		break;
+
+	case some_function_to_26:
+		_xdr_argument = (xdrproc_t) xdr_void;
+		_xdr_result = (xdrproc_t) xdr_int;
+		local = (bool_t (*) (char *, void *,  struct svc_req *))_some_function_to_26_1;
 		break;
 
 	default:

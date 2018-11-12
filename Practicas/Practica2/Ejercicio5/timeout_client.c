@@ -80,7 +80,7 @@ int main (int argc, char *argv[])
 		printf("CLIENT: to_prog_1 finish\n");
 	}
 	printf("\nAverage time %f ms\n", (totalTime * 1000) / iterations);
-
+	fflush(stdout);
 	timeout_22(clnt);
 	timeout_25(clnt);
 

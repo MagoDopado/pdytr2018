@@ -22,12 +22,24 @@ extern "C" {
 #define some_function 1
 extern  enum clnt_stat some_function_1(int *, CLIENT *);
 extern  bool_t some_function_1_svc(int *, struct svc_req *);
+#define some_function_to_22 2
+extern  enum clnt_stat some_function_to_22_1(int *, CLIENT *);
+extern  bool_t some_function_to_22_1_svc(int *, struct svc_req *);
+#define some_function_to_26 3
+extern  enum clnt_stat some_function_to_26_1(int *, CLIENT *);
+extern  bool_t some_function_to_26_1_svc(int *, struct svc_req *);
 extern int to_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
 #define some_function 1
 extern  enum clnt_stat some_function_1();
 extern  bool_t some_function_1_svc();
+#define some_function_to_22 2
+extern  enum clnt_stat some_function_to_22_1();
+extern  bool_t some_function_to_22_1_svc();
+#define some_function_to_26 3
+extern  enum clnt_stat some_function_to_26_1();
+extern  bool_t some_function_to_26_1_svc();
 extern int to_prog_1_freeresult ();
 #endif /* K&R C */
 
