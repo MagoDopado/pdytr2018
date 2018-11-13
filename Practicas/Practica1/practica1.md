@@ -1,7 +1,7 @@
 <h1><center>PDyTR 2018</center></h1>
 <h1><center>Informe 1</center></h1>
 
-</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
+</br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
 ### Integrantes:
 
 #### Aparicio Natalia, Legajo 12667/7  
@@ -78,9 +78,28 @@ Doc:
   http://man7.org/linux/man-pages/man2/read.2.html  
   http://man7.org/linux/man-pages/man2/write.2.html
 
+
+**Correcciones**
+El cliente intenta enviar la totalidad del archivo, permitiendole al SO utilizar el tamaño de buffer que le parezca más adecuado para la situación. Luego el servidor observa la cantidad enviada a partir del valor de retorno de read y se ajustan los offsets y tamaño restante. De esta forma el buffer nunca se rompe.
+
+![](ej2b.png)
+
+Si se hace referencia al tamaño del buffer de envío del archivo, se utilizó memoria dinámica por lo que como se explicó más arriba no hubo problemas con el tamaño del buffer en la stack. El límite de tamaño de un arreglo en la stack es de  65,535 bytes.
+
 **Inciso c)**  
 Para la verificación de cantidad lo hacemos enviandole dos mensajes al servidor, el primero indicando la cantidad y en el segundo mensaje, la información.
 Para la verificación de contenido, con la misma función definida en ambos procesos, utilizamos un checksum.
+
+**Correcciones**  
+El cliente envía 3 mensajes:
+- El tamaño del payload a enviar.
+- El payload.
+- El checksum del payload.
+Luego espera que el servidor le responda con el checksum.  
+Mientras tanto, el servidor recibe los datos y va calculando su checksum, finalmente lo verifica con el enviado por el cliente y se lo manda de vuelta.
+Ante una diferencia en la cantidad de datos o los datos en sí, el checksum es una de las opciones para verificar los datos, aunque no infalible.
+La funcion de checksum utilizada fue adler32 y la implementación se buscó en wikipedia.
+
 
 **Inciso D)**  
 Usamos como tamaño de file 3, 4 y 6 MegaBytes de prueba. No utilizamos arhivos más pequeños porque es despreciable la diferencia entre sets de datos pequeñas.
@@ -94,6 +113,23 @@ tamaño | repeticiones | promedio | desviacion estandar
 50M|100|243.5377 ms|1.7989 ms
 100M|50|484.7031ms|0.8658 ms
 
+**Correcciones**  
+Se toma el tiempo con la función gettimeofday (ver MAN 2) que da presición de microsegundos.
+El tiempo inicial se captura antes de la primer comunicación del cliente, luego de abierto el socket.
+Se vuelve a tomar el tiempo luego de que el servidor envía el checksum correspondiente.
+Se restan los valores obteniendo el delta y se guarda en un arreglo de tiempos para cada attempt.
+
+Al finalizar todos los attempts se calcula average y standard deviation a partir de sus formulas.
+
+
+Para generar los archivos basura se utilizó el comando
+```bash
+head -c 1M </dev/urandom > trash.txt
+```
+
+Reemplazando 1M por el tamaño de basura que se quiera.
+
+
 #### 3 - ¿Por qué en C se puede usar la misma variable tanto para leer de teclado como para enviar por un socket? ¿Esto sería relevante para las aplicaciones c/s?
 Ya que utilizamos para esta práctiva punteros a char para el buffer, no tiene más lógica que de estructura contenedora.
 Consideramos que no es relevante para las aplicaciones c/s si es utilizado correctamente la memoria asignada.
@@ -104,6 +140,27 @@ Si se podría implementar.
 Habría que configurar el cliente para que envíe el nombre del archivo al servidor y el servidor busca el archivo, lo abre y lo manda por red.
 
 
+**Correcciones**  
+Se podría implementar un servidor que acepte comandos (enumerativos) y argumentos
+encodeados como `<opcode> 0x00 arg1 0x00 arg2 0x00 ...`
+
+OpCode|Significado|Argumentos|Retorno|Ejemplo
+---|---|---|---|---
+01| LS | Path | N Entry1 Entry2 ... EntryN|`0x00 0x01 0x00 0x00 / 0x00` -> `0x00 0x02 0x00 0x00 . 0x00 i n d e x . h t m l 0x00`
+02 | CD | Path | Success/Error | `0x00 0x02 0x00 0x00 . . 0x00` -> `0x00 0x01 0x00 0x00`
+03 | Read | Path | Size Bytes Checksum | `0x00 0x03 0x00 0x00 i n d e x . h t m l 0x00` -> `0x00 0x05 0x00 0x00 1 2 3 4 5 0x00 0xF1 0xA1 0x0D 0xFE`
+04 | Write | Path Size Bytes Checksum | Success/Error Checksum | `0x00 0x03 0x00 0x00 i n d e x . h t m l 0x00 1 2 3 4 5 0x00 0xF1 0xA1 0x0D 0xFE` -> `0x00 0x01 0x00 0x00 0xF1 0xA1 0x0D 0xFE`
+05 | RM | Path | Success/Error | `0x00 0x05 0x00 0x00 i n d e x . h t m l 0x0¢0` -> `0x00 0x00 0x00 0x00`
+06 | Close | n/a | 0 | `0x00 0x06 0x00 0x00` -> `0x00 0x00 0x00 0x00`
+
+Si se quiere implementar el servidor de manera stateless, se pueden utilizar rutas absulutas en todos los comandos y deshabilitar el `CD`. Sino, se debe mantener una idea de sesión (se puede utilizar el socket como identificador y generador de la sesión) con la información del path actual.
+
+Dado que la cantidad de operaciones es limitada, la lógica del servidor es bastante simple. Se lee 1 byte esperando el opcode y a partir de esto se determina la cantidad de argumentos (todos _null terminated_). Finalmente se hace la llamada al file system y se responde.
+Se puede optimizar pre cacheando la estructura inicial del filesystem a servir e invalidarlo sólo en los writes/rm (se asume que el filesystem no cambiará de otra forma)
+
+El servidor debe tener una ruta base de la cual no se puede escapar para preservar la integridad del SO.
+
+Por simplicidad el servidor no explica los errores, pero se podría perfectamente generar una tabla de error codes similar a la de _gnu/linux_.
 
 #### 5 - Defina qué es un servidor con estado (stateful server) y qué es un servidor sin estado (stateless server)  
 
