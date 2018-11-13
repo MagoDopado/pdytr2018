@@ -9,9 +9,9 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 /* This class implements the interface with remote methods */
-public class RemoteClass extends UnicastRemoteObject implements IfaceRemoteClass
+public class RemoteImpl extends UnicastRemoteObject implements IfaceRemote
 {
-    protected RemoteClass() throws RemoteException
+    protected RemoteImpl() throws RemoteException
     {
         super();
     }

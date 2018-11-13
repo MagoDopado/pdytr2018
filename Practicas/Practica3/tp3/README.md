@@ -2,17 +2,18 @@
 
 ```bash
 # compiler and client
-cd /pdytr/Practicas/Practica3/tp3/src
+cd /pdytr/Practicas/Practica3/tp3
 
 # create target folder
-mkdir ../target
+mkdir target
 
 # compiler or client
-javac -d ../target ./*.java
+cd ./target
+javac -d . ../src/*.java
 
 # compiler
 rmiregistry &
-java -cp ../target/ StartRemoteObject
+java -cp . StartRemote
 
 # client
 java -cp ../target/ AskRemote compiler

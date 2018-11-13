@@ -6,16 +6,16 @@
  */
 import java.rmi.registry.Registry; /* REGISTRY_PORT */
 import java.rmi.Naming; /* rebind */
-public class StartRemoteObject
+public class StartRemote
 {
     public static void main (String args[])
     {
         try{
             /* Create ("start") the object which has the remote method */
-            RemoteClass robject = new RemoteClass();
+            RemoteImpl remote = new RemoteImpl();
             /* Register the object using Naming.rebind(...) */
             String rname = "//localhost:" + Registry.REGISTRY_PORT + "/remote";
-            Naming.rebind(rname, robject);
+            Naming.rebind(rname, remote);
         } catch (Exception e) {
             System.out.println("Hey, an error occurred at Naming.rebind");
             e.printStackTrace();

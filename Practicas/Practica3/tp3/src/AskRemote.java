@@ -26,7 +26,7 @@ public class AskRemote
         try {
             String rname = "//" + args[0] + ":" + Registry.REGISTRY_PORT + "/remote";
             String fileName = args[1];
-            IfaceRemoteClass remote = (IfaceRemoteClass) Naming.lookup(rname);
+            IfaceRemote remote = (IfaceRemote) Naming.lookup(rname);
 
             readFileFromServer(remote, fileName);
 
@@ -38,7 +38,7 @@ public class AskRemote
         }
     }
 
-    public static void readFileFromServer(IfaceRemoteClass server, String fileName) throws Exception
+    public static void readFileFromServer(IfaceRemote server, String fileName) throws Exception
     {
       FileWriter file = new FileWriter(fileName);
       int remainingSize = server.getSize(fileName);
@@ -49,7 +49,7 @@ public class AskRemote
         char[] buffer = server.readBuffer(fileName, offset, chunckSize);
 
         int read = buffer.length;
-        
+
         file.write(buffer, offset, read);
         remainingSize = 0;
       } while (remainingSize > 0);
