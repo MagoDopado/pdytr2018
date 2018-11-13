@@ -4,7 +4,7 @@
 </br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
 ### Integrantes:
 
-#### Aparicio Natalia, Legajo 12667/7  
+#### Aparicio Natalia Elizabeth, Legajo 12667/7  
 
 #### Eusebi Cirano, Legajo 12469/2  
 
@@ -89,6 +89,10 @@ Si se agregan `exit()` al servidor el cliente envía un mensaje de error y la co
 
 Tanto en TCP como en UDP se detectan los mismos resultados.
 
+Video de muestra: [link](https://youtu.be/xDxauMDOiOA)
+
+[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/xDxauMDOiOA/0.jpg)](http://www.youtube.com/watch?v=xDxauMDOiOA)
+
 
 #### 2 Describir/analizar las opciones
 ##### a.- -N
@@ -134,8 +138,75 @@ Todos los archivos escritos por el servidor reciben el prefijo `server`.
 En la carpeta del ejercicio5 hemos programado un cliente y un servidor muy sencillos para probarlo.
 Leyendo la documentación de RPC, sabemos que el timeout por defecto que usa es de 25 segundos.
 
+Promedio de tiempo de una llamada RPC
+
+```
+# 0
+CLIENT: to_prog_1 start
+Send time 0.110507 ms
+CLIENT: to_prog_1 finish
+
+# 1
+CLIENT: to_prog_1 start
+Send time 0.087976 ms
+CLIENT: to_prog_1 finish
+
+# 2
+CLIENT: to_prog_1 start
+Send time 0.070453 ms
+CLIENT: to_prog_1 finish
+
+# 3
+CLIENT: to_prog_1 start
+Send time 0.066042 ms
+CLIENT: to_prog_1 finish
+
+# 4
+CLIENT: to_prog_1 start
+Send time 0.045419 ms
+CLIENT: to_prog_1 finish
+
+# 5
+CLIENT: to_prog_1 start
+Send time 0.042915 ms
+CLIENT: to_prog_1 finish
+
+# 6
+CLIENT: to_prog_1 start
+Send time 0.044942 ms
+CLIENT: to_prog_1 finish
+
+# 7
+CLIENT: to_prog_1 start
+Send time 0.042081 ms
+CLIENT: to_prog_1 finish
+
+# 8
+CLIENT: to_prog_1 start
+Send time 0.044465 ms
+CLIENT: to_prog_1 finish
+
+# 9
+CLIENT: to_prog_1 start
+Send time 0.041008 ms
+CLIENT: to_prog_1 finish
+
+Average time 0.059581 ms
+
+CLIENT: some_function_to_22_1 start
+CLIENT: some_function_to_22_1 finish
+timeout_22: Send time 22000.349998 ms
+
+CLIENT: some_function_to_26_1 start
+call failed - should be timeout: RPC: Timed out
+
+CLIENT: some_function_to_26_1 finish
+some_function_to_26_1: Send time 27005.294085 ms
+```
+
+
 ##### b. Reducir el timeout de las llamadas RPC a un 10% menos del promedio encontrado anteriormente.
 Seteando el timeout del servidor en 22 segundo, funciona correctamente sin devolver ningún timeout.
 
-##### c.Desarrollar un cliente/servidor RPC de forma tal que siempre se supere el tiempo de timeout. Una forma sencilla puede utilizar el tiempo de timeout como parámetro del procedimiento remoto, donde se lo utiliza del lado del servidor en una llamada a sleep( ), por ejemplo.
+##### c. Desarrollar un cliente/servidor RPC de forma tal que siempre se supere el tiempo de timeout. Una forma sencilla puede utilizar el tiempo de timeout como parámetro del procedimiento remoto, donde se lo utiliza del lado del servidor en una llamada a sleep( ), por ejemplo.
 La tercer función declarada en el timeout.x (some_function_to_26) siempre que se llame, dará timeout.

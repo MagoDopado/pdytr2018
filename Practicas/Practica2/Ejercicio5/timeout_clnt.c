@@ -17,3 +17,21 @@ some_function_1(int *clnt_res, CLIENT *clnt)
 		TIMEOUT));
 
 }
+
+enum clnt_stat 
+some_function_to_22_1(int *clnt_res, CLIENT *clnt)
+{
+	 return (clnt_call (clnt, some_function_to_22, (xdrproc_t) xdr_void, (caddr_t) NULL,
+		(xdrproc_t) xdr_int, (caddr_t) clnt_res,
+		TIMEOUT));
+
+}
+
+enum clnt_stat 
+some_function_to_26_1(int *clnt_res, CLIENT *clnt)
+{
+	 return (clnt_call (clnt, some_function_to_26, (xdrproc_t) xdr_void, (caddr_t) NULL,
+		(xdrproc_t) xdr_int, (caddr_t) clnt_res,
+		TIMEOUT));
+
+}
