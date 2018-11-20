@@ -10,8 +10,8 @@ public class ClientCopier {
     private static final int BUFFER_SIZE = 1024;
 
     public static void main(String[] args) {
-        if (args.length < 2) {
-            System.out.println("args: server_host file");
+        if (args.length < 2 || args.length > 2) {
+            System.out.println("usage: server_host file");
             exit(1);
         }
         String host = args[0];
