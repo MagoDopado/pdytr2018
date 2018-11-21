@@ -1,4 +1,3 @@
-import java.io.FileInputStream;
 import java.io.RandomAccessFile;
 import java.rmi.Naming;
 import java.rmi.registry.Registry;
@@ -6,8 +5,7 @@ import java.util.AbstractMap;
 
 import static java.lang.System.exit;
 
-public class Client {
-    private static final int BUFFER_SIZE = 1024;
+public class Client extends AbstractClient {
 
     public static void main(String[] args) {
         if (args.length < 3) {
@@ -49,22 +47,4 @@ public class Client {
         System.out.println("[CLIENT][READ-FROM-SERVER] END");
     }
 
-    private static void writeToServer(IRemoteServer server, String filename) throws Exception {
-        System.out.println("[CLIENT][WRITE-FROM-SERVER] START - filename: " + filename);
-
-        try (FileInputStream file = new FileInputStream(filename)) {
-            byte[] data = new byte[BUFFER_SIZE];
-
-            int readBytes = file.read(data);
-            server.write(filename, readBytes, data);
-            while (readBytes == BUFFER_SIZE) {
-                readBytes = file.read(data);
-                server.write(filename, readBytes, data);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("[CLIENT][WRITE-FROM-SERVER] START - filename: " + filename);
-    }
 }

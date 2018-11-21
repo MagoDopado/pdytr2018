@@ -1,4 +1,3 @@
-import java.io.FileInputStream;
 import java.io.RandomAccessFile;
 import java.rmi.Naming;
 import java.rmi.registry.Registry;
@@ -6,8 +5,7 @@ import java.util.Map;
 
 import static java.lang.System.exit;
 
-public class ClientCopier {
-    private static final int BUFFER_SIZE = 1024;
+public class ClientCopier extends AbstractClient {
 
     public static void main(String[] args) {
         if (args.length < 2 || args.length > 2) {
@@ -51,18 +49,4 @@ public class ClientCopier {
         System.out.println("[CLIENT][READ-FROM-SERVER] END");
     }
 
-    private static void writeToServer(IRemoteServer server, String filename) {
-        try (FileInputStream file = new FileInputStream(filename)) {
-            byte[] data = new byte[BUFFER_SIZE];
-
-            int readBytes = file.read(data);
-            server.write(filename, readBytes, data);
-            while (readBytes == BUFFER_SIZE) {
-                readBytes = file.read(data);
-                server.write(filename, readBytes, data);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
