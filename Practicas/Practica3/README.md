@@ -4,7 +4,7 @@
 
 ```bash
 # compiler and client
-cd /pdytr/Practicas/Practica3/tp3
+cd /pdytr/Practicas/Practica3/exercise1
 
 # create target folder
 mkdir target
