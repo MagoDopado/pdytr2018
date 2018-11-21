@@ -31,30 +31,40 @@ public class Client {
     }
 
     private static void readFromServer(IRemoteServer server, String filename) throws Exception {
-        RandomAccessFile file = new RandomAccessFile("client_" + filename, "rw");
-        AbstractMap.SimpleEntry<byte[], Integer> readPair;
-        int pos = 0;
+        System.out.println("[CLIENT][READ-FROM-SERVER] START - filename: " + filename);
 
-        readPair = server.read(filename, pos, BUFFER_SIZE);
-        file.write(readPair.getKey(), (int) file.getChannel().size(), readPair.getValue());
-        while (readPair.getValue() == BUFFER_SIZE) {
-            pos += readPair.getValue();
+        try (RandomAccessFile file = new RandomAccessFile("client_" + filename, "rw")) {
+            AbstractMap.SimpleEntry<byte[], Integer> readPair;
+            int pos = 0;
+
             readPair = server.read(filename, pos, BUFFER_SIZE);
-            file.write(readPair.getKey(), 0, readPair.getValue());
+            file.write(readPair.getKey(), (int) file.getChannel().size(), readPair.getValue());
+            while (readPair.getValue() == BUFFER_SIZE) {
+                pos += readPair.getValue();
+                readPair = server.read(filename, pos, BUFFER_SIZE);
+                file.write(readPair.getKey(), 0, readPair.getValue());
+            }
         }
-        file.close();
+
+        System.out.println("[CLIENT][READ-FROM-SERVER] END");
     }
 
     private static void writeToServer(IRemoteServer server, String filename) throws Exception {
-        FileInputStream file = new FileInputStream(filename);
-        byte[] data = new byte[BUFFER_SIZE];
+        System.out.println("[CLIENT][WRITE-FROM-SERVER] START - filename: " + filename);
 
-        int readBytes = file.read(data);
-        server.write(filename, readBytes, data);
-        while (readBytes == BUFFER_SIZE) {
-            readBytes = file.read(data);
+        try (FileInputStream file = new FileInputStream(filename)) {
+            byte[] data = new byte[BUFFER_SIZE];
+
+            int readBytes = file.read(data);
             server.write(filename, readBytes, data);
+            while (readBytes == BUFFER_SIZE) {
+                readBytes = file.read(data);
+                server.write(filename, readBytes, data);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        file.close();
+
+        System.out.println("[CLIENT][WRITE-FROM-SERVER] START - filename: " + filename);
     }
 }
