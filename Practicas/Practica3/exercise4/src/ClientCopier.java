@@ -1,4 +1,3 @@
-import java.io.FileInputStream;
 import java.io.RandomAccessFile;
 import java.rmi.Naming;
 import java.rmi.registry.Registry;
@@ -6,8 +5,7 @@ import java.util.Map;
 
 import static java.lang.System.exit;
 
-public class ClientCopier {
-    private static final int BUFFER_SIZE = 1024;
+public class ClientCopier extends AbstractClient {
 
     public static void main(String[] args) {
         if (args.length < 2 || args.length > 2) {
@@ -28,31 +26,27 @@ public class ClientCopier {
         }
     }
 
-    private static void readFromServer(IRemoteServer server, String filename) throws Exception {
-        RandomAccessFile file = new RandomAccessFile("copy_" + filename, "rw");
-        Map.Entry<byte[], Integer> readPair;
-        int pos = 0;
+    private static void readFromServer(IRemoteServer server, String filename) {
 
-        readPair = server.read(filename, pos, BUFFER_SIZE);
-        file.write(readPair.getKey(), (int) file.getChannel().size(), readPair.getValue());
-        while (readPair.getValue() == BUFFER_SIZE) {
-            pos += readPair.getValue();
+        System.out.println("[CLIENT][READ-FROM-SERVER] START - filename: " + filename);
+
+        try (RandomAccessFile file = new RandomAccessFile("copy_" + filename, "rw")) {
+            Map.Entry<byte[], Integer> readPair;
+            int pos = 0;
+
             readPair = server.read(filename, pos, BUFFER_SIZE);
-            file.write(readPair.getKey(), 0, readPair.getValue());
+            file.write(readPair.getKey(), (int) file.getChannel().size(), readPair.getValue());
+
+            while (readPair.getValue() == BUFFER_SIZE) {
+                pos += readPair.getValue();
+                readPair = server.read(filename, pos, BUFFER_SIZE);
+                file.write(readPair.getKey(), 0, readPair.getValue());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        file.close();
+
+        System.out.println("[CLIENT][READ-FROM-SERVER] END");
     }
 
-    private static void writeToServer(IRemoteServer server, String filename) throws Exception {
-        FileInputStream file = new FileInputStream(filename);
-        byte[] data = new byte[BUFFER_SIZE];
-
-        int readBytes = file.read(data);
-        server.write(filename, readBytes, data);
-        while (readBytes == BUFFER_SIZE) {
-            readBytes = file.read(data);
-            server.write(filename, readBytes, data);
-        }
-        file.close();
-    }
 }

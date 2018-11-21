@@ -44,7 +44,7 @@ java -cp . StartServer
 echo "Hello Nan and Git!" >> text.txt
 java -cp . Client compiler read text.txt
 
-java -cp . ClientCopier compiler read text.txt
+java -cp . ClientCopier compiler text.txt
 
 ```
 
