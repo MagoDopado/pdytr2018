@@ -1,5 +1,4 @@
 import java.util.*;
-import jade.content.lang.sl.*;
 import jade.core.*;
 import jade.core.behaviours.*;
 import jade.domain.*;
@@ -7,6 +6,7 @@ import jade.domain.AMSService;
 import jade.domain.FIPAAgentManagement.*;
 import jade.domain.introspection.*;
 import jade.domain.JADEAgentManagement.*;
+import jade.tools.sniffer.Agent;
 
 public class Containers extends Agent
 {
@@ -72,7 +72,7 @@ public class Containers extends Agent
 						for(ContainerID container : temp)
 						{
 							print(container.toString() + " was removed from the platform.");
-							available.remove(container);
+							available.remove(removedContainer);
 						}
 					}
 				}));

@@ -7,7 +7,7 @@ Compilar con:
 javac -classpath ../lib/* -d target/ src/*.java
 
 Ejecutar con:
-java -cp ../lib/*:target jade.Boot -agents report:Reporter,containers:Containers
+java -cp ../lib/*:target jade.Boot -agents "report:Reporter;containers:Containers"
 
 Agregar containers con:
 java -cp ../lib/*:target jade.Boot -container -host compiler
