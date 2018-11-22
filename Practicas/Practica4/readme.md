@@ -18,4 +18,8 @@ Compilar con:
 javac -classpath ../lib/* -d target/ src/*.java
 
 Ejecutar con:
-java -cp ../lib/*:target jade.Boot -agents adder:Adder
+java -cp ../lib/*:target jade.Boot -agents 'toti:Totalizer(numeros)'
+
+
+
+java -cp ../lib/*:target jade.Boot -container -host compiler 
