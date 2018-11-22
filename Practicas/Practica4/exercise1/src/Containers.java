@@ -6,7 +6,6 @@ import jade.domain.AMSService;
 import jade.domain.FIPAAgentManagement.*;
 import jade.domain.introspection.*;
 import jade.domain.JADEAgentManagement.*;
-import jade.tools.sniffer.Agent;
 
 public class Containers extends Agent
 {
