@@ -67,12 +67,8 @@ public class Containers extends Agent
 					public void handle(Event event)
 					{
 						RemovedContainer removedContainer = (RemovedContainer) event;
-						ArrayList<ContainerID> temp = new ArrayList<ContainerID>(available);
-						for(ContainerID container : temp)
-						{
-							print(container.toString() + " was removed from the platform.");
-							available.remove(removedContainer);
-						}
+						available.remove(removedContainer);
+						print(removedContainer.toString() + " was removed from the platform.");
 					}
 				}));
 			}

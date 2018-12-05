@@ -1,3 +1,8 @@
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.OperatingSystemMXBean;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 import jade.content.lang.sl.*;
 import jade.core.*;
@@ -25,12 +30,26 @@ public class Reporter extends Agent {
 		return (new CyclicBehaviour(agent){
 			Reporter reporter;
 			Queue<ContainerID> currentContainers;
+			ArrayList<String> accumultatedInfo = new ArrayList<>();
 			private Queue<ContainerID> getContainers()
 			{
 				LinkedList<ContainerID> list = new LinkedList<ContainerID>(Containers.Instance.available);
 				list.remove(Containers.mainContainer());
 				list.addLast(Containers.mainContainer());
 				return list;
+			}
+			private String getData()
+			{
+				OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
+        java.lang.Runtime runtime = java.lang.Runtime.getRuntime();
+        runtime.gc();
+        String host = null;
+        try {
+            host = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+				return "Computer name: " + host + " | Free memory: " + runtime.freeMemory() + "B | Processing load: " + osBean.getSystemLoadAverage();
 			}
 			public void onStart()
 			{
@@ -42,9 +61,15 @@ public class Reporter extends Agent {
 					currentContainers = getContainers();
 					//Print accumulated info.
 					print("back at main.");
+					for (String data : accumultatedInfo ) {
+						print(data);
+					}
+					accumultatedInfo = new ArrayList<>();
 				}
-				//Move to another container.
+				// Get current container information and save into agent.
+				accumultatedInfo.add(getData());
 				print(getLocalName());
+				//Move to another container.
 				try { Thread.sleep(1000); } catch(InterruptedException ex) { }
 				doMove(currentContainers.remove());
 			}
