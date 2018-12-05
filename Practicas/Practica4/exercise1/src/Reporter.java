@@ -41,14 +41,14 @@ public class Reporter extends Agent {
 			private String getData()
 			{
 				OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
-        java.lang.Runtime runtime = java.lang.Runtime.getRuntime();
-        runtime.gc();
-        String host = null;
-        try {
-            host = InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+				java.lang.Runtime runtime = java.lang.Runtime.getRuntime();
+				runtime.gc();
+				String host = null;
+				try {
+					host = InetAddress.getLocalHost().getHostName();
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				}
 				return "Computer name: " + host + " | Free memory: " + runtime.freeMemory() + "B | Processing load: " + osBean.getSystemLoadAverage();
 			}
 			public void onStart()
