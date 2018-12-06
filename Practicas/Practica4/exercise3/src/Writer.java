@@ -1,3 +1,4 @@
+import java.io.*;
 import jade.core.*;
 import jade.core.behaviours.*;
 
@@ -13,45 +14,52 @@ public class Writer extends Agent {
 		System.out.println(time() + ": " + s);
 	}
 
-	private CyclicBehaviour onTick(Writer agent)
+	public void stop()
 	{
-		return (new CyclicBehaviour(agent)
+		doDelete();
+		print("Agent stopped.");
+	}
+
+	private SequentialBehaviour onTick(Writer agent)
+	{
+		SequentialBehaviour rw = (new SequentialBehaviour(agent)
 		{
 			Writer writer;
 			int done = 0;
-			private void stop()
-			{
-				writer.doDelete();
-			}
 			public void onStart()
 			{
 				writer = (Writer) getAgent();
 			}
-			public void action()
+			public int onEnd()
 			{
-				SequentialBehaviour rw = new SequentialBehaviour(writer);
-				//Read.
-				rw.addSubBehaviour(new OneShotBehaviour()
-				{
-					public void action()
-					{
-						print("Read");
-					}
-				});
-				// Write
-				rw.addSubBehaviour(new OneShotBehaviour()
-				{
-					public void action()
-					{
-						print("Write");
-					}
-				});
-				addBehaviour(rw);
 				if (done++ == 10) {
-					stop();
+					writer.stop();
 				}
+				else
+				{
+					reset();
+					myAgent.addBehaviour(this);
+				}
+				return super.onEnd();
 			}
 		});
+		//Read.
+		rw.addSubBehaviour(new OneShotBehaviour(agent)
+		{
+			public void action()
+			{
+				print("Read");
+			}
+		});
+		// Write
+		rw.addSubBehaviour(new OneShotBehaviour(agent)
+		{
+			public void action()
+			{
+				print("Write");
+			}
+		});
+		return rw;
 	}
 
 	private WakerBehaviour onWake(Writer agent)
