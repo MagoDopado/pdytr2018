@@ -52,7 +52,7 @@ java -cp . ClientCopier compiler text.txt
 
 ```bash
 # compiler and client
-cd /pdytr/Practicas/Practica3/exercise4
+cd /pdytr/Practicas/Practica3/exercise5
 
 # create target folder
 mkdir target

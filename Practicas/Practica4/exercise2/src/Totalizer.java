@@ -92,4 +92,3 @@ public class Totalizer extends Agent {
         }
     }
 }
-
